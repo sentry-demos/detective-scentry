@@ -5,9 +5,9 @@
     "description": "Finds Sentry SDKs and others",
     // "homepage_url": "https://duo.com/labs",
     "icons": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "icons/santo-16.png",
+      "32": "icons/santo-32.png",
+      "64": "icons/santo-64.png"
     },
     "web_accessible_resources": [
       "js/*",
