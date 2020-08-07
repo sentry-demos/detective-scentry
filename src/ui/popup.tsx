@@ -1,8 +1,11 @@
+import "../styles/popup.css"
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import "../styles/popup.css"
-import "bootstrap/dist/css/bootstrap.min.css";
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 interface IProps {
 }
@@ -23,91 +26,91 @@ class Hello extends React.Component<IProps, IState> {
   componentDidMount() {
     let that = this;
 
-     function getScripts() {
-       return Array.from(document.getElementsByTagName("script")).map(
-         (h) => h.outerHTML
-       );
-     }
+    function getScripts() {
+      return Array.from(document.getElementsByTagName("script")).map(
+        (h) => h.outerHTML
+      );
+    }
 
-     function getWindowSentry() {
-       return localStorage.hasSentry;
-     }
+    function getWindowSentry() {
+      return localStorage.hasSentry;
+    }
 
     function getWindowNewRelic() {
       return localStorage.hasNewRelic;
     }
 
     // check for Sentry
-     let hasSentry = false;
-     chrome.tabs.executeScript(
-       {
-         code: "(" + getWindowSentry + ")();"
-       },
-       (results) => {
-         if (results && results.length > 1 && !!results[0] && results[0] === "true") {
-           hasSentry = true;
-           that.setState({hasSentry: true})
-         } else {
-           chrome.tabs.query(
-             {
-               active: true,
-               currentWindow: true,
-             },
-             (tabs) => {
-               let url = tabs[0].url;
+    let hasSentry = false;
+    chrome.tabs.executeScript(
+      {
+        code: "(" + getWindowSentry + ")();"
+      },
+      (results) => {
+        if (results && results.length > 1 && !!results[0] && results[0] === "true") {
+          hasSentry = true;
+          that.setState({ hasSentry: true })
+        } else {
+          chrome.tabs.query(
+            {
+              active: true,
+              currentWindow: true,
+            },
+            (tabs) => {
+              let url = tabs[0].url;
 
-               chrome.tabs.executeScript(
-                 {
-                   code: "(" + getScripts + ")();", //argument here is a string but function.toString() returns function's code
-                 },
-                 (results) => {
-                   if (results && results.length > 0 && results[0].length > 0) {
-                     let i = 0;
-                     while (i < results[0].length && !hasSentry) {
-                       const scriptString = results[0][i];
-                       if (
-                         scriptString.includes("src=") &&
-                         !scriptString.includes('src="chrome-extension://')
-                       ) {
-                         let srcRegEx = /src="(.*?)"/g,
-                           source = srcRegEx.exec(scriptString),
-                           scriptSrc = source[1];
+              chrome.tabs.executeScript(
+                {
+                  code: "(" + getScripts + ")();", //argument here is a string but function.toString() returns function's code
+                },
+                (results) => {
+                  if (results && results.length > 0 && results[0].length > 0) {
+                    let i = 0;
+                    while (i < results[0].length && !hasSentry) {
+                      const scriptString = results[0][i];
+                      if (
+                        scriptString.includes("src=") &&
+                        !scriptString.includes('src="chrome-extension://')
+                      ) {
+                        let srcRegEx = /src="(.*?)"/g,
+                          source = srcRegEx.exec(scriptString),
+                          scriptSrc = source[1];
 
-                         if (!scriptSrc.includes("http")) {
-                           scriptSrc = url.slice(0, -1) + scriptSrc;
-                         }
-                         fetch(scriptSrc)
-                           .then((response) => response.text())
-                           .then((text) => {
-                             if (text.includes("dsn:")) {
-                               // to figure out if using sentry.io or on-prem/rev-proxy, as well as Raven
-                               hasSentry = true;
-                               that.setState({hasSentry: true})
-                             }
-                           })
-                           .catch((error) => {
-                             console.log(error);
-                           });
-                       } else if (scriptString.toLowerCase().includes("dsn:")) {
-                         hasSentry = true;
-                         that.setState({hasSentry: true})
-                       }
-                       i++;
-                     }
-                     hasSentry = false;
-                     that.setState({ hasSentry: false })
-                   } else {
-                     console.log("Did not find any script tags");
-                     hasSentry = false;
-                     that.setState({ hasSentry: false })
-                   }
-                 }
-               );
-             }
-           );
-         }
-       }
-     );
+                        if (!scriptSrc.includes("http")) {
+                          scriptSrc = url.slice(0, -1) + scriptSrc;
+                        }
+                        fetch(scriptSrc)
+                          .then((response) => response.text())
+                          .then((text) => {
+                            if (text.includes("dsn:")) {
+                              // to figure out if using sentry.io or on-prem/rev-proxy, as well as Raven
+                              hasSentry = true;
+                              that.setState({ hasSentry: true })
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          });
+                      } else if (scriptString.toLowerCase().includes("dsn:")) {
+                        hasSentry = true;
+                        that.setState({ hasSentry: true })
+                      }
+                      i++;
+                    }
+                    hasSentry = false;
+                    that.setState({ hasSentry: false })
+                  } else {
+                    console.log("Did not find any script tags");
+                    hasSentry = false;
+                    that.setState({ hasSentry: false })
+                  }
+                }
+              );
+            }
+          );
+        }
+      }
+    );
 
 
 
@@ -118,7 +121,7 @@ class Hello extends React.Component<IProps, IState> {
       }, (results) => {
         if (results && results.length > 1 && !!results[0] && results[0] === "true") {
           // TODO
-          that.setState({hasNewRelic: true});
+          that.setState({ hasNewRelic: true });
         }
       }
     );
@@ -128,40 +131,35 @@ class Hello extends React.Component<IProps, IState> {
   render() {
     return (
       <div className="popup-padded">
-        <h3>
-          Hello, fellow <strong>SDK detective!</strong>
-        </h3>
-        <img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
-        <br />
-        <p className="lead">
-          Woof! My name is Santo
-        </p>
-        <p className="lead tooltip">...I have begun sniffing for SDKs...</p>
-
-        <p className="small ps text-warning	">
-            p.s. I currently only know how to detect 2 scents: Sentry + NewRelic
-        </p>
-
-        <p>I smelled me some...</p>
-
-        <div>
-          {this.state.hasSentry ? (
-            <img
-              className="sentry-logo"
-              src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"
-            />
-          ) : (
-            ""
-          )}
-          {this.state.hasNewRelic ? (
-            <img
-              className="nr-logo"
-              src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
-            />
-          ) : (
-            ""
-          )}
-        </div>
+        <Card.Header>Detective Scentry Here!</Card.Header>
+        <Card.Body>
+          <Card.Img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
+          {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
+          <Card.Subtitle className="mb-2 text-muted">Woof! My name is Santo and I detect SDKs.</Card.Subtitle>
+          <p className="lead tooltip">...I have begun sniffing for SDKs...</p>
+          <Card.Text>
+            I smelled me some:
+          </Card.Text>
+          <ListGroup variant="flush">
+            {this.state.hasSentry ? (
+              <ListGroup.Item><img
+                className="sentry-logo"
+                src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"
+              /></ListGroup.Item>
+            ) : (
+                ""
+              )}
+            {this.state.hasNewRelic ? (
+              <ListGroup.Item><img
+                className="nr-logo"
+                src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
+              /></ListGroup.Item>
+            ) : (
+                ""
+              )}
+          </ListGroup>
+        </Card.Body>
+        <Card.Footer className="text-muted">P.S. I currently only know how to detect 2 scents: Sentry + NewRelic</Card.Footer>
       </div>
     );
   }
@@ -170,6 +168,6 @@ class Hello extends React.Component<IProps, IState> {
 // --------------
 
 ReactDOM.render(
-    <Hello />,
-    document.getElementById('root')
+  <Hello />,
+  document.getElementById('root')
 )
