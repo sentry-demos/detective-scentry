@@ -7,14 +7,16 @@ interface IProps {
 }
 
 interface IState {
-  races?: string;
+  hasSentry?: boolean,
+  hasNewRelic?: boolean;
 }
 
 class Hello extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
-      races: "abc",
+      hasSentry: false,
+      hasNewRelic: false
     };
   }
   componentDidMount() {
@@ -30,16 +32,20 @@ class Hello extends React.Component<IProps, IState> {
        return localStorage.hasSentry;
      }
 
-     let hasSentry = false;
+    function getWindowNewRelic() {
+      return localStorage.hasNewRelic;
+    }
 
+    // check for Sentry
+     let hasSentry = false;
      chrome.tabs.executeScript(
        {
-         code: "(" + getWindowSentry + ")();", //argument here is a string but function.toString() returns function's code
+         code: "(" + getWindowSentry + ")();"
        },
        (results) => {
          if (!!results[0] && results[0] === "true") {
            hasSentry = true;
-           that.setState({races: "true"})
+           that.setState({hasSentry: true})
          } else {
            chrome.tabs.query(
              {
@@ -75,34 +81,46 @@ class Hello extends React.Component<IProps, IState> {
                              if (text.includes("dsn:")) {
                                // to figure out if using sentry.io or on-prem/rev-proxy, as well as Raven
                                hasSentry = true;
-                               that.setState({races: "true"})
-                               alert("has Sentry via NPM/YARN");
+                               that.setState({hasSentry: true})
                              }
                            })
                            .catch((error) => {
-                             alert(error);
                              console.log(error);
                            });
                        } else if (scriptString.toLowerCase().includes("dsn:")) {
                          hasSentry = true;
-                         that.setState({races: "true"})
-                         alert("has Sentry via NPM/YARN");
+                         that.setState({hasSentry: true})
                        }
                        i++;
                      }
+                     hasSentry = false;
+                     that.setState({ hasSentry: false })
                    } else {
                      console.log("Did not find any script tags");
+                     hasSentry = false;
+                     that.setState({ hasSentry: false })
                    }
                  }
                );
              }
            );
          }
-         if (hasSentry) {
-           alert("has Sentry via CDN");
-         }
        }
      );
+
+
+
+    // check for New Relic
+    chrome.tabs.executeScript(
+      {
+        code: "(" + getWindowNewRelic + ")();"
+      }, (results) => {
+        if (!!results[0] && results[0] === "true") {
+          // TODO
+          that.setState({hasNewRelic: true});
+        }
+      }
+    );
 
   }
 
@@ -110,8 +128,17 @@ class Hello extends React.Component<IProps, IState> {
     return (
       <div className="popup-padded">
         <h1>Hello fellow SDK detective!</h1>
-        <h2>{this.state.races}</h2>
-        <img src="https://github.com/ndmanvar/hackday2020/blob/cdn-detect/images/santo.jpg?raw=true" />
+        <img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
+        <br/>
+        <p>Hi, my name is Santo and I will begin sniffing for SDKs</p>
+
+        <p>I currently only know how to detect 2 scents: Sentry + NewRelic</p>
+
+        <div>
+          {this.state.hasSentry ? <img className="sentry-logo" src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"/>  : ""}
+          {this.state.hasNewRelic ? <img className="nr-logo" src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true" /> : ""}
+        </div>
+
       </div>
     );
   }

@@ -14,4 +14,5 @@ function injectScript(file_path, tag) {
 }
 
 localStorage.hasSentry = false;
+localStorage.hasNewRelic = false;
 injectScript(chrome.extension.getURL('content.js'), 'body');
