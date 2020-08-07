@@ -44,7 +44,7 @@ class Hello extends React.Component<IProps, IState> {
          code: "(" + getWindowSentry + ")();"
        },
        (results) => {
-         if (!!results[0] && results[0] === "true") {
+         if (results && results.length > 1 && !!results[0] && results[0] === "true") {
            hasSentry = true;
            that.setState({hasSentry: true})
          } else {
@@ -61,7 +61,7 @@ class Hello extends React.Component<IProps, IState> {
                    code: "(" + getScripts + ")();", //argument here is a string but function.toString() returns function's code
                  },
                  (results) => {
-                   if (results.length > 0 && results[0].length > 0) {
+                   if (results && results.length > 0 && results[0].length > 0) {
                      let i = 0;
                      while (i < results[0].length && !hasSentry) {
                        const scriptString = results[0][i];
@@ -116,7 +116,7 @@ class Hello extends React.Component<IProps, IState> {
       {
         code: "(" + getWindowNewRelic + ")();"
       }, (results) => {
-        if (!!results[0] && results[0] === "true") {
+        if (results && results.length > 1 && !!results[0] && results[0] === "true") {
           // TODO
           that.setState({hasNewRelic: true});
         }
