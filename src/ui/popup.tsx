@@ -119,7 +119,7 @@ class Hello extends React.Component<IProps, IState> {
       {
         code: "(" + getWindowNewRelic + ")();"
       }, (results) => {
-        if (results && results.length > 1 && !!results[0] && results[0] === "true") {
+        if (!!results[0] && results[0] === "true") {
           // TODO
           that.setState({ hasNewRelic: true });
         }
