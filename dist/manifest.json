@@ -19,12 +19,12 @@
       "default_popup": "popup.html"
     },
     "default_locale": "en",
-    "background": {
-      "scripts": [
-        "js/background.js"
-      ],
-      "persistent": true
-    },
+    // "background": {
+    //   "scripts": [
+    //     "js/background.js"
+    //   ],
+    //   "persistent": true
+    // },
     "permissions": [
       "https://*/*",
       "activeTab",
