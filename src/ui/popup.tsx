@@ -47,7 +47,7 @@ class Hello extends React.Component<IProps, IState> {
         code: "(" + getWindowSentry + ")();"
       },
       (results) => {
-        if (results && results.length > 1 && !!results[0] && results[0] === "true") {
+        if (results && results.length > 0 && !!results[0] && results[0] === "true") {
           hasSentry = true;
           that.setState({ hasSentry: true })
         } else {
@@ -119,7 +119,7 @@ class Hello extends React.Component<IProps, IState> {
       {
         code: "(" + getWindowNewRelic + ")();"
       }, (results) => {
-        if (!!results[0] && results[0] === "true") {
+        if (results && results.length > 0 && !!results[0] && results[0] === "true") {
           // TODO
           that.setState({ hasNewRelic: true });
         }
