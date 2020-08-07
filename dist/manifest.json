@@ -1,9 +1,8 @@
 {
-    "name": "Santo's SDK Detector",
+    "name": "Scentry",
     "version": "0.0.1",
     "manifest_version": 2,
-    "description": "Finds Sentry SDKs and others",
-    // "homepage_url": "https://duo.com/labs",
+    "description": "Finds Sentry and other SDKs",
     "icons": {
       "16": "icons/santo-16.png",
       "32": "icons/santo-32.png",
@@ -19,12 +18,6 @@
       "default_popup": "popup.html"
     },
     "default_locale": "en",
-    // "background": {
-    //   "scripts": [
-    //     "js/background.js"
-    //   ],
-    //   "persistent": true
-    // },
     "permissions": [
       "https://*/*",
       "activeTab",
