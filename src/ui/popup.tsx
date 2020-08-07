@@ -131,7 +131,7 @@ class Hello extends React.Component<IProps, IState> {
   render() {
     return (
       <div className="popup-padded">
-        <Card.Header>Detective Scentry Here!</Card.Header>
+        <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
           <Card.Img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
