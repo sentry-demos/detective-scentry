@@ -11,8 +11,7 @@ body {
 }
 
 img {
-    height: 200px;
-    width: 200px;
+    width: 80%;
 }
 
 .sentry-logo {
@@ -21,6 +20,6 @@ img {
 }
 
 .nr-logo {
-    height: 60px;
+    height: 35px;
     width: 200px;
 }

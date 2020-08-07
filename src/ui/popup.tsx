@@ -130,9 +130,11 @@ class Hello extends React.Component<IProps, IState> {
         <h1>Hello fellow SDK detective!</h1>
         <img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
         <br/>
-        <p>Hi, my name is Santo and I will begin sniffing for SDKs</p>
+        <p>Woof, my name is Santo and I have begun sniffing for SDKs</p>
 
-        <p>I currently only know how to detect 2 scents: Sentry + NewRelic</p>
+        <p>p.s. I currently only know how to detect 2 scents: Sentry + NewRelic</p>
+
+        <p>I smelled me some...</p>
 
         <div>
           {this.state.hasSentry ? <img className="sentry-logo" src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"/>  : ""}
