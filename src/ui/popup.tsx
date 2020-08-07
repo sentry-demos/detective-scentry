@@ -2,6 +2,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 
 import "../styles/popup.css"
+import "bootstrap/dist/css/bootstrap.min.css";
 
 interface IProps {
 }
@@ -127,20 +128,40 @@ class Hello extends React.Component<IProps, IState> {
   render() {
     return (
       <div className="popup-padded">
-        <h1>Hello fellow SDK detective!</h1>
+        <h3>
+          Hello, fellow <strong>SDK detective!</strong>
+        </h3>
         <img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
-        <br/>
-        <p>Woof, my name is Santo and I have begun sniffing for SDKs</p>
+        <br />
+        <p className="lead">
+          Woof! My name is Santo
+        </p>
+        <p className="lead tooltip">...I have begun sniffing for SDKs...</p>
 
-        <p>p.s. I currently only know how to detect 2 scents: Sentry + NewRelic</p>
+        <p className="small ps text-warning	">
+            p.s. I currently only know how to detect 2 scents: Sentry + NewRelic
+        </p>
 
         <p>I smelled me some...</p>
 
         <div>
-          {this.state.hasSentry ? <img className="sentry-logo" src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"/>  : ""}
-          {this.state.hasNewRelic ? <img className="nr-logo" src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true" /> : ""}
+          {this.state.hasSentry ? (
+            <img
+              className="sentry-logo"
+              src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"
+            />
+          ) : (
+            ""
+          )}
+          {this.state.hasNewRelic ? (
+            <img
+              className="nr-logo"
+              src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
+            />
+          ) : (
+            ""
+          )}
         </div>
-
       </div>
     );
   }
