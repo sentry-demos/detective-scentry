@@ -23,109 +23,27 @@ class Hello extends React.Component<IProps, IState> {
       hasNewRelic: false
     };
   }
-  componentDidMount() {
-    let that = this;
 
-    function getScripts() {
-      return Array.from(document.getElementsByTagName("script")).map(
-        (h) => h.outerHTML
-      );
-    }
-
-    function getWindowSentry() {
-      return localStorage.hasSentry;
-    }
-
-    function getWindowNewRelic() {
-      return localStorage.hasNewRelic;
-    }
-
-    // check for Sentry
-    let hasSentry = false;
+  executeScript(code, successFunc) {
     chrome.tabs.executeScript(
-      {
-        code: "(" + getWindowSentry + ")();"
-      },
+      { code },
       (results) => {
-        if (results && results.length > 0 && !!results[0] && results[0] === "true") {
-          hasSentry = true;
-          that.setState({ hasSentry: true })
-        } else {
-          chrome.tabs.query(
-            {
-              active: true,
-              currentWindow: true,
-            },
-            (tabs) => {
-              let url = tabs[0].url;
-
-              chrome.tabs.executeScript(
-                {
-                  code: "(" + getScripts + ")();", //argument here is a string but function.toString() returns function's code
-                },
-                (results) => {
-                  if (results && results.length > 0 && results[0].length > 0) {
-                    let i = 0;
-                    while (i < results[0].length && !hasSentry) {
-                      const scriptString = results[0][i];
-                      if (
-                        scriptString.includes("src=") &&
-                        !scriptString.includes('src="chrome-extension://')
-                      ) {
-                        let srcRegEx = /src="(.*?)"/g,
-                          source = srcRegEx.exec(scriptString),
-                          scriptSrc = source[1];
-
-                        if (!scriptSrc.includes("http")) {
-                          scriptSrc = url.slice(0, -1) + scriptSrc;
-                        }
-                        fetch(scriptSrc)
-                          .then((response) => response.text())
-                          .then((text) => {
-                            if (text.includes("dsn:")) {
-                              // to figure out if using sentry.io or on-prem/rev-proxy, as well as Raven
-                              hasSentry = true;
-                              that.setState({ hasSentry: true })
-                            }
-                          })
-                          .catch((error) => {
-                            console.log(error);
-                          });
-                      } else if (scriptString.toLowerCase().includes("dsn:")) {
-                        hasSentry = true;
-                        that.setState({ hasSentry: true })
-                      }
-                      i++;
-                    }
-                    hasSentry = false;
-                    that.setState({ hasSentry: false })
-                  } else {
-                    console.log("Did not find any script tags");
-                    hasSentry = false;
-                    that.setState({ hasSentry: false })
-                  }
-                }
-              );
-            }
-          );
+        if (
+          results &&
+          results.length > 0 &&
+          !!results[0] &&
+          results[0] === "true"
+        ) {
+          successFunc();
         }
       }
     );
+  }
 
-
-
-    // check for New Relic
-    chrome.tabs.executeScript(
-      {
-        code: "(" + getWindowNewRelic + ")();"
-      }, (results) => {
-        if (results && results.length > 0 && !!results[0] && results[0] === "true") {
-          // TODO
-          that.setState({ hasNewRelic: true });
-        }
-      }
-    );
-
+  componentDidMount() {
+    // check for Sentry
+    this.executeScript("localStorage.hasSentry;", () => this.setState({ hasSentry: true }) );
+    this.executeScript("localStorage.hasNewRelic;", () => this.setState({ hasNewRelic: true }));
   }
 
   render() {
@@ -164,8 +82,6 @@ class Hello extends React.Component<IProps, IState> {
     );
   }
 }
-
-// --------------
 
 ReactDOM.render(
   <Hello />,
