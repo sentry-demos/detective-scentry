@@ -130,16 +130,16 @@ class Hello extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
-            {/* {this.state.hasBugsnag ? (
+            {this.state.hasBugsnag ? (
               <ListGroup.Item>
                 <img
                   className="bugsnag-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
+                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/bugsnag-logo.png?raw=true"
                 />
               </ListGroup.Item>
             ) : (
               ""
-            )} */}
+            )}
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
