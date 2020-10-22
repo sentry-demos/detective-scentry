@@ -14,15 +14,17 @@ interface IState {
   hasSentry?: boolean;
   hasNewRelic?: boolean;
   hasBugsnag?: boolean;
+  hasRollbar?: boolean;
 }
 
-class Hello extends React.Component<IProps, IState> {
+class Popup extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
       hasSentry: false,
       hasNewRelic: false,
-      hasBugsnag: false
+      hasBugsnag: false,
+      hasRollbar: false
     };
   }
 
@@ -93,8 +95,8 @@ class Hello extends React.Component<IProps, IState> {
     // check for Sentry
     this.executeScript("localStorage.hasSentry;", (results) => this.setState({ hasSentry: results[0] === "true" }) );
     this.executeScript("localStorage.hasNewRelic;", (results) => this.setState({ hasNewRelic: results[0] === "true" }));
-
     this.executeScript("localStorage.hasBugsnag;", (results) => this.setState({ hasBugsnag: results[0] === "true" }));
+    this.executeScript("localStorage.hasRollbar;", (results) => this.setState({ hasRollbar: results[0] === "true" }));
   }
 
   render() {
@@ -130,20 +132,30 @@ class Hello extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
-            {/* {this.state.hasBugsnag ? (
+            {this.state.hasBugsnag ? (
               <ListGroup.Item>
                 <img
                   className="bugsnag-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
+                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/bugsnag-logo.png?raw=true"
                 />
               </ListGroup.Item>
             ) : (
               ""
-            )} */}
+            )}
+            {this.state.hasRollbar ? (
+              <ListGroup.Item>
+                <img
+                  className="rollbar-logo"
+                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/rollbar-logo.png?raw=true"
+                />
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 2 scents: Sentry + NewRelic
+          P.S. I currently only know how to detect 4 scents: Sentry, NewRelic, BugSnag, + Rollbar
         </Card.Footer>
       </div>
     );
@@ -151,6 +163,6 @@ class Hello extends React.Component<IProps, IState> {
 }
 
 ReactDOM.render(
-  <Hello />,
+  <Popup />,
   document.getElementById('root')
 )
