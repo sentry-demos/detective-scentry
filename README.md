@@ -5,7 +5,7 @@
 
 ## To run:
 ```
-npm webpack # it will update dist
+npx webpack # it will update dist
 ```
 
 'Load unpacked' from chrome://extensions -> `./dist`
