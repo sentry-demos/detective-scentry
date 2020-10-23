@@ -2,3 +2,4 @@ localStorage.hasSentry = !!window.Sentry || !!window.__SENTRY__ || !!window.Rave
 localStorage.hasNewRelic = !!window.newrelic;
 localStorage.hasBugsnag = !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient;
 localStorage.hasRollbar = !!window._rollbarDidLoad;
+localStorage.hasDatadog = !!window.DD_RUM;

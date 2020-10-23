@@ -15,6 +15,7 @@ interface IState {
   hasNewRelic?: boolean;
   hasBugsnag?: boolean;
   hasRollbar?: boolean;
+  hasDatadog?: boolean;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -24,7 +25,8 @@ class Popup extends React.Component<IProps, IState> {
       hasSentry: false,
       hasNewRelic: false,
       hasBugsnag: false,
-      hasRollbar: false
+      hasRollbar: false,
+      hasDatadog: false,
     };
   }
 
@@ -97,6 +99,7 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.hasNewRelic;", (results) => this.setState({ hasNewRelic: results[0] === "true" }));
     this.executeScript("localStorage.hasBugsnag;", (results) => this.setState({ hasBugsnag: results[0] === "true" }));
     this.executeScript("localStorage.hasRollbar;", (results) => this.setState({ hasRollbar: results[0] === "true" }));
+    this.executeScript("localStorage.hasDatadog;", (results) => this.setState({ hasDatadog: results[0] === "true" }));
   }
 
   render() {
@@ -152,10 +155,21 @@ class Popup extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
+            {this.state.hasDatadog ? (
+              <ListGroup.Item>
+                <img
+                  className="datadog-logo"
+                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/datadog-logo.png?raw=true"
+                />
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 4 scents: Sentry, NewRelic, BugSnag, + Rollbar
+          P.S. I currently only know how to detect 4 scents: Sentry, NewRelic,
+          BugSnag, + Rollbar
         </Card.Footer>
       </div>
     );
