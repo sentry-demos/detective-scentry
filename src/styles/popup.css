@@ -33,6 +33,11 @@ img {
     width: 10rem;
 }
 
+.logrocket-logo {
+    height: 2rem;
+    width: 8rem;
+}
+
 .card-footer {
     font-size: x-small
 }

@@ -171,7 +171,7 @@ class Popup extends React.Component<IProps, IState> {
             {this.state.hasLogRocket ? (
               <ListGroup.Item>
                 <img
-                  className="datadog-logo"
+                  className="logrocket-logo"
                   src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/logrocket-logo.png?raw=true"
                 />
               </ListGroup.Item>
