@@ -28,6 +28,11 @@ img {
     width: 6rem;
 }
 
+.datadog-logo {
+    height: 6rem;
+    width: 10rem;
+}
+
 .card-footer {
     font-size: x-small
 }

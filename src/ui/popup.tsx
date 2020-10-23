@@ -16,6 +16,7 @@ interface IState {
   hasBugsnag?: boolean;
   hasRollbar?: boolean;
   hasDatadog?: boolean;
+  hasLogRocket?: boolean;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -27,6 +28,7 @@ class Popup extends React.Component<IProps, IState> {
       hasBugsnag: false,
       hasRollbar: false,
       hasDatadog: false,
+      hasLogRocket: false,
     };
   }
 
@@ -100,6 +102,7 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.hasBugsnag;", (results) => this.setState({ hasBugsnag: results[0] === "true" }));
     this.executeScript("localStorage.hasRollbar;", (results) => this.setState({ hasRollbar: results[0] === "true" }));
     this.executeScript("localStorage.hasDatadog;", (results) => this.setState({ hasDatadog: results[0] === "true" }));
+    this.executeScript("localStorage.hasLogRocket;", (results) => this.setState({ hasLogRocket: results[0] === "true" }));
   }
 
   render() {
@@ -160,6 +163,16 @@ class Popup extends React.Component<IProps, IState> {
                 <img
                   className="datadog-logo"
                   src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/datadog-logo.png?raw=true"
+                />
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
+            {this.state.hasLogRocket ? (
+              <ListGroup.Item>
+                <img
+                  className="datadog-logo"
+                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/logrocket-logo.png?raw=true"
                 />
               </ListGroup.Item>
             ) : (
