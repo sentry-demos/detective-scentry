@@ -7,6 +7,14 @@ import * as ReactDOM from "react-dom"
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 
+let santoImg = chrome.extension.getURL("js/d2849812b2c9fca074855c2bbabd5c1f.jpg")
+let sentryLogo = chrome.extension.getURL("js/03afcd320f72633f541912e5986b0f93.png")
+let bugsnagLogo = chrome.extension.getURL("js/1f8c46398fd8a6133f0a8f9ebaab6b08.png")
+let rollbarLogo = chrome.extension.getURL("js/affb689d9355df5b02f7e6a22ba496c6.png")
+let newrelicLogo = chrome.extension.getURL("js/19c0cccebe5bdf46cc0c02b1723039a3.png")
+let datadogLogo = chrome.extension.getURL("js/6f820f6928c60a37143bcb0f07adc7eb.png")
+let logrocketLogo = chrome.extension.getURL("js/111b99a33e6aad0950eb4204fc06dabe.png")
+
 interface IProps {
 }
 
@@ -110,7 +118,7 @@ class Popup extends React.Component<IProps, IState> {
       <div className="popup-padded">
         <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
-          <Card.Img src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/santo.jpg?raw=true" />
+          <Card.Img src={santoImg} />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
             Woof! My name is Santo and I detect SDKs.
@@ -122,7 +130,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="sentry-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/sentry-logo.png?raw=true"
+                  src={sentryLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -132,7 +140,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="nr-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/newrelic-logo.png?raw=true"
+                  src={newrelicLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -142,7 +150,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="bugsnag-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/bugsnag-logo.png?raw=true"
+                  src={bugsnagLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -152,7 +160,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="rollbar-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/rollbar-logo.png?raw=true"
+                  src={rollbarLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -162,7 +170,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="datadog-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/datadog-logo.png?raw=true"
+                  src={datadogLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -172,7 +180,7 @@ class Popup extends React.Component<IProps, IState> {
               <ListGroup.Item>
                 <img
                   className="logrocket-logo"
-                  src="https://github.com/ndmanvar/hackweek-2020/blob/master/images/logrocket-logo.png?raw=true"
+                  src={logrocketLogo}
                 />
               </ListGroup.Item>
             ) : (
@@ -181,8 +189,7 @@ class Popup extends React.Component<IProps, IState> {
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 4 scents: Sentry, NewRelic,
-          BugSnag, + Rollbar
+          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag, Rollbar, Datadog (RUM), +LogRocket
         </Card.Footer>
       </div>
     );
