@@ -42,6 +42,10 @@ img {
     font-size: x-small
 }
 
+.location {
+    font-size: x-small;
+}
+
 .card-text {
     font-size: smaller
 }

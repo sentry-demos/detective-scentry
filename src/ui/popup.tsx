@@ -25,6 +25,12 @@ interface IState {
   hasRollbar?: boolean;
   hasDatadog?: boolean;
   hasLogRocket?: boolean;
+  sentryLocation: string;
+  newrelicLocation: string;
+  bugsnagLocation: string;
+  rollbarLocation: string;
+  datadogLocation: string;
+  logrocketLocation: string;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -37,6 +43,12 @@ class Popup extends React.Component<IProps, IState> {
       hasRollbar: false,
       hasDatadog: false,
       hasLogRocket: false,
+      sentryLocation: '',
+      newrelicLocation: '',
+      bugsnagLocation: '',
+      rollbarLocation: '',
+      datadogLocation: '',
+      logrocketLocation: ''
     };
   }
 
@@ -88,6 +100,8 @@ class Popup extends React.Component<IProps, IState> {
   }
 
   executeScript(code, successFunc) {
+    console.log("code:" + code)
+    console.log("success function" + successFunc)
     chrome.tabs.executeScript(
       { code },
       (results) => {
@@ -111,6 +125,16 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.hasRollbar;", (results) => this.setState({ hasRollbar: results[0] === "true" }));
     this.executeScript("localStorage.hasDatadog;", (results) => this.setState({ hasDatadog: results[0] === "true" }));
     this.executeScript("localStorage.hasLogRocket;", (results) => this.setState({ hasLogRocket: results[0] === "true" }));
+
+    // get location where observability tool was detected.
+    // This is done so that if a tool was detected in a third-party frame,
+    // like Recaptcha, we can be aware of it and determine whether it's a false positive.
+    this.executeScript("localStorage.sentryLocation;", (results) => this.setState({ sentryLocation: results[0]}) );
+    this.executeScript("localStorage.newrelicLocation;", (results) => this.setState({ newrelicLocation: results[0]}) );
+    this.executeScript("localStorage.bugsnagLocation;", (results) => this.setState({ sentryLocation: results[0]}) );
+    this.executeScript("localStorage.rollbarLocation;", (results) => this.setState({ rollbarLocation: results[0]}) );
+    this.executeScript("localStorage.datadogLocation;", (results) => this.setState({ datadogLocation: results[0]}) );
+    this.executeScript("localStorage.logrocketLocation;", (results) => this.setState({ logrocketLocation: results[0]}) );
   }
 
   render() {
@@ -132,6 +156,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="sentry-logo"
                   src={sentryLogo}
                 />
+                <p className="text-muted location">
+                  Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -142,6 +169,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="nr-logo"
                   src={newrelicLogo}
                 />
+                <p className="text-muted location">
+                  New Relic found at: <a href={this.state.newrelicLocation}>{this.state.newrelicLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -152,6 +182,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="bugsnag-logo"
                   src={bugsnagLogo}
                 />
+                <p className="text-muted location">
+                  Bugsnag found at: <a href={this.state.bugsnagLocation}>{this.state.bugsnagLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -162,6 +195,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="rollbar-logo"
                   src={rollbarLogo}
                 />
+                <p className="text-muted location">
+                  Rollbar found at: <a href={this.state.rollbarLocation}>{this.state.rollbarLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -172,6 +208,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="datadog-logo"
                   src={datadogLogo}
                 />
+                <p className="text-muted location">
+                  Datadog found at: <a href={this.state.datadogLocation}>{this.state.datadogLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -182,6 +221,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="logrocket-logo"
                   src={logrocketLogo}
                 />
+                <p className="text-muted location">
+                  Logrocket found at: <a href={this.state.logrocketLocation}>{this.state.logrocketLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
@@ -189,7 +231,8 @@ class Popup extends React.Component<IProps, IState> {
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag, Rollbar, Datadog (RUM), +LogRocket
+          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag,
+ Rollbar, Datadog (RUM), +LogRocket
         </Card.Footer>
       </div>
     );
