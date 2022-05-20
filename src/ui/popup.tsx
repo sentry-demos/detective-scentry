@@ -231,8 +231,7 @@ class Popup extends React.Component<IProps, IState> {
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag,
- Rollbar, Datadog (RUM), +LogRocket
+          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag, Rollbar, Datadog (RUM), +LogRocket
         </Card.Footer>
       </div>
     );
