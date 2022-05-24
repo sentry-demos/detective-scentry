@@ -100,8 +100,6 @@ class Popup extends React.Component<IProps, IState> {
   }
 
   executeScript(code, successFunc) {
-    console.log("code:" + code)
-    console.log("success function" + successFunc)
     chrome.tabs.executeScript(
       { code },
       (results) => {

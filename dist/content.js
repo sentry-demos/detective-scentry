@@ -1,7 +1,3 @@
-console.log("location: " + window.location.href)
-if(!!window.Sentry || !!window.__SENTRY__ || !!window.Raven) {
-	console.log("     -> detected sentry at the above location (" + window.location.href + ")")
-}
 localStorage.hasSentry = !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
 localStorage.hasNewRelic = !!window.newrelic;
 localStorage.hasBugsnag = !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient;
