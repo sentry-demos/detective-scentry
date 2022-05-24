@@ -4,3 +4,11 @@ localStorage.hasBugsnag = !!window.Bugsnag || !!window.bugsnag || !!window.bugsn
 localStorage.hasRollbar = !!window._rollbarDidLoad;
 localStorage.hasDatadog = !!window.DD_RUM;
 localStorage.hasLogRocket = !!window._lr_loaded;
+
+localStorage.sentryLocation = localStorage.hasSentry ? window.location.href : ''
+localStorage.newrelicLocation = localStorage.hasNewRelic ? window.location.href : ''
+localStorage.bugsnagLocation = localStorage.hasBugsnag ? window.location.href : ''
+localStorage.rollbarLocation = localStorage.hasRollbar ? window.location.href : ''
+localStorage.datadogLocation = localStorage.hasDatadog ? window.location.href : ''
+localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.href : ''
+
