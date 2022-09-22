@@ -12,3 +12,9 @@ localStorage.rollbarLocation = localStorage.hasRollbar ? window.location.href : 
 localStorage.datadogLocation = localStorage.hasDatadog ? window.location.href : ''
 localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.href : ''
 
+localStorage.usesSentryPerformance = usesSentryPerformance();
+
+function usesSentryPerformance() {
+	let options = __SENTRY__.hub.getClient().getOptions()
+	return !!options.tracesSampleRate || !!options.tracesSampler
+}

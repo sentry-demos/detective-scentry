@@ -46,6 +46,14 @@ img {
     font-size: x-small;
 }
 
+.warning {
+    color: #f39c12;
+}
+
+.success {
+    color: #27ae60;
+}
+
 .card-text {
     font-size: smaller
 }
