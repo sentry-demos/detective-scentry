@@ -31,7 +31,6 @@ interface IState {
   rollbarLocation: string;
   datadogLocation: string;
   logrocketLocation: string;
-  usesSentryPerformance?: boolean;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -49,8 +48,7 @@ class Popup extends React.Component<IProps, IState> {
       bugsnagLocation: '',
       rollbarLocation: '',
       datadogLocation: '',
-      logrocketLocation: '',
-      usesSentryPerformance: false,
+      logrocketLocation: ''
     };
   }
 
@@ -135,9 +133,6 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.rollbarLocation;", (results) => this.setState({ rollbarLocation: results[0]}) );
     this.executeScript("localStorage.datadogLocation;", (results) => this.setState({ datadogLocation: results[0]}) );
     this.executeScript("localStorage.logrocketLocation;", (results) => this.setState({ logrocketLocation: results[0]}) );
-
-    // Check for presence of Sentry Performance
-    this.executeScript("localStorage.usesSentryPerformance;", (results) => this.setState({ usesSentryPerformance: results[0] === "true" }));
   }
 
   render() {
@@ -159,24 +154,9 @@ class Popup extends React.Component<IProps, IState> {
                   className="sentry-logo"
                   src={sentryLogo}
                 />
-                <ul>
-                  <li>
-                    {this.state.usesSentryPerformance ? (  
-                      <p className="location success">
-                        Uses Sentry performance!
-                      </p>
-                    ) : (
-                      <p className="location warning">
-                        Does not use Sentry performance!
-                      </p>
-                    )}
-                  </li>
-                  <li>
-                    <p className="text-muted location">
-                      Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
-                    </p>
-                  </li>
-                </ul>
+                <p className="text-muted location">
+                  Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
+                </p>
               </ListGroup.Item>
             ) : (
               ""
