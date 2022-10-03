@@ -15,6 +15,8 @@ let newrelicLogo = chrome.extension.getURL("js/19c0cccebe5bdf46cc0c02b1723039a3.
 let datadogLogo = chrome.extension.getURL("js/6f820f6928c60a37143bcb0f07adc7eb.png")
 let logrocketLogo = chrome.extension.getURL("js/111b99a33e6aad0950eb4204fc06dabe.png")
 
+let ACCEPTABLE_SAMPLE_RATE = 50
+
 interface IProps {
 }
 
@@ -32,6 +34,8 @@ interface IState {
   datadogLocation: string;
   logrocketLocation: string;
   usesSentryPerformance?: boolean;
+  sentryPerformanceSampleRate?: number;
+  sentryErrorSampleRate?: number;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -51,6 +55,8 @@ class Popup extends React.Component<IProps, IState> {
       datadogLocation: '',
       logrocketLocation: '',
       usesSentryPerformance: false,
+      sentryPerformanceSampleRate: 0,
+      sentryErrorSampleRate: 0,
     };
   }
 
@@ -136,8 +142,10 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.datadogLocation;", (results) => this.setState({ datadogLocation: results[0]}) );
     this.executeScript("localStorage.logrocketLocation;", (results) => this.setState({ logrocketLocation: results[0]}) );
 
-    // Check for presence of Sentry Performance
+    // Check for presence of Sentry-specific values
     this.executeScript("localStorage.usesSentryPerformance;", (results) => this.setState({ usesSentryPerformance: results[0] === "true" }));
+    this.executeScript("localStorage.sentryPerformanceSampleRate;", (results) => this.setState({ sentryPerformanceSampleRate: results[0] }));
+    this.executeScript("localStorage.sentryErrorSampleRate;", (results) => this.setState({ sentryErrorSampleRate: results[0] }));
   }
 
   render() {
@@ -161,20 +169,37 @@ class Popup extends React.Component<IProps, IState> {
                 />
                 <ul>
                   <li>
+                    <span className="location">
+                      {this.state.sentryErrorSampleRate ? (
+                        <span className={(this.state.sentryErrorSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
+                          Sampling Errors at {this.state.sentryErrorSampleRate}%
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect an error sample rate
+                        </span>
+                      )
+                    }
+                    </span>
+                  </li>
+                  <li>
                     {this.state.usesSentryPerformance ? (  
-                      <p className="location success">
-                        Uses Sentry performance!
-                      </p>
+                      <span className="location">
+                        <span> Using Sentry performance</span> <br/>
+                        <span className={(this.state.sentryPerformanceSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
+                          Sampling transactions at {this.state.sentryPerformanceSampleRate}%
+                        </span>
+                      </span>
                     ) : (
-                      <p className="location warning">
+                      <span className="location warning">
                         Does not use Sentry performance!
-                      </p>
+                      </span>
                     )}
                   </li>
                   <li>
-                    <p className="text-muted location">
+                    <span className="text-muted location">
                       Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
-                    </p>
+                    </span>
                   </li>
                 </ul>
               </ListGroup.Item>

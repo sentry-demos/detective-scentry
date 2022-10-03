@@ -12,10 +12,13 @@ localStorage.rollbarLocation = localStorage.hasRollbar ? window.location.href : 
 localStorage.datadogLocation = localStorage.hasDatadog ? window.location.href : ''
 localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.href : ''
 
-localStorage.usesSentryPerformance = usesSentryPerformance();
+// Additional data for pages where Sentry was sniffed
+localStorage.usesSentryPerformance 				= usesSentryPerformance();
+localStorage.sentryPerformanceSampleRate 	= sentryPerformanceSampleRate();
+localStorage.sentryErrorSampleRate				= sentryErrorSampleRate();
 
 function usesSentryPerformance() {
-	if (__SENTRY__) {
+	if (typeof __SENTRY__ != 'undefined') {
 		let options = __SENTRY__.hub.getClient().getOptions()
 		return !!options.tracesSampleRate || !!options.tracesSampler
 	}
@@ -25,4 +28,24 @@ function usesSentryPerformance() {
 	// performance and return false.
 	// SDKs with performance available should have __SENTRY__ defined.
 	return false
+}
+
+function sentryPerformanceSampleRate() {
+	if (usesSentryPerformance()) {
+		let options = __SENTRY__.hub.getClient().getOptions()
+		return options.tracesSampleRate * 100 // convert into a human-readable percentage
+	}
+
+	return null
+}
+
+function sentryErrorSampleRate() {
+	// assume we care only about more recent SDKs
+	if (typeof __SENTRY__ != 'undefined') {
+		sentryConfig = __SENTRY__.hub.getClient().getOptions()
+		sampleRate = sentryConfig.sampleRate ? sentryConfig.sampleRate : 1
+		return sampleRate * 100 // convert into a human-readable percentage
+	}
+
+	return null
 }
