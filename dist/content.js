@@ -13,9 +13,9 @@ localStorage.datadogLocation = localStorage.hasDatadog ? window.location.href : 
 localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.href : ''
 
 // Additional data for pages where Sentry was sniffed
-localStorage.usesSentryPerformance 				= usesSentryPerformance();
-localStorage.sentryPerformanceSampleRate 	= sentryPerformanceSampleRate();
-localStorage.sentryErrorSampleRate				= sentryErrorSampleRate();
+localStorage.usesSentryPerformance = usesSentryPerformance();
+localStorage.sentryPerformanceSampleRate  = sentryPerformanceSampleRate();
+localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
 
 function usesSentryPerformance() {
 	if (typeof __SENTRY__ != 'undefined') {
