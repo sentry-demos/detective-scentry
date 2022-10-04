@@ -16,6 +16,7 @@ localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.hre
 localStorage.usesSentryPerformance = usesSentryPerformance();
 localStorage.sentryPerformanceSampleRate  = sentryPerformanceSampleRate();
 localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
+localStorage.dsn = getDsn();
 
 function usesSentryPerformance() {
 	if (typeof __SENTRY__ != 'undefined') {
@@ -48,4 +49,11 @@ function sentryErrorSampleRate() {
 	}
 
 	return null
+}
+
+function getDsn() {
+	if (typeof __SENTRY__ != 'undefined') {
+		let options = __SENTRY__.hub.getClient().getOptions()
+		return options.dsn
+	}
 }

@@ -16,6 +16,7 @@ let datadogLogo = chrome.extension.getURL("js/6f820f6928c60a37143bcb0f07adc7eb.p
 let logrocketLogo = chrome.extension.getURL("js/111b99a33e6aad0950eb4204fc06dabe.png")
 
 let ACCEPTABLE_SAMPLE_RATE = 50
+let SENTRY_DOMAIN = 'sentry.io'
 
 interface IProps {
 }
@@ -36,6 +37,7 @@ interface IState {
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
+  dsn?: string;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -57,6 +59,7 @@ class Popup extends React.Component<IProps, IState> {
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
+      dsn: '',
     };
   }
 
@@ -146,6 +149,7 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.usesSentryPerformance;", (results) => this.setState({ usesSentryPerformance: results[0] === "true" }));
     this.executeScript("localStorage.sentryPerformanceSampleRate;", (results) => this.setState({ sentryPerformanceSampleRate: results[0] }));
     this.executeScript("localStorage.sentryErrorSampleRate;", (results) => this.setState({ sentryErrorSampleRate: results[0] }));
+    this.executeScript("localStorage.dsn;", (results) => this.setState({ dsn: results[0] }));
   }
 
   render() {
@@ -153,7 +157,7 @@ class Popup extends React.Component<IProps, IState> {
       <div className="popup-padded">
         <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
-          <Card.Img src={santoImg} />
+          <Card.Img src={santoImg} className="img-small" />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
             Woof! My name is Santo and I detect SDKs.
@@ -198,8 +202,13 @@ class Popup extends React.Component<IProps, IState> {
                   </li>
                   <li>
                     <span className="text-muted location">
-                      Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
+                      Sending events to <b>{this.state.dsn.includes(SENTRY_DOMAIN) ? "SaaS" : "Self-Hosted Sentry"}</b> via <a href={this.state.dsn}>{this.state.dsn}</a>
                     </span>
+                  </li>
+                  <li>
+                    <span className="text-muted location">
+                      Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
+                    </span>                    
                   </li>
                 </ul>
               </ListGroup.Item>

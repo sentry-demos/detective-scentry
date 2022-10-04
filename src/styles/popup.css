@@ -14,6 +14,10 @@ img {
     width: 80%;
 }
 
+.img-small {
+    width: 55px;
+}
+
 .sentry-logo {
     height: 2rem;
     width: 6rem;
@@ -59,5 +63,6 @@ img {
 }
 
 .card-img {
+    width: 75% !important;
     padding-bottom: 1rem;
 }
