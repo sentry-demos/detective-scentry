@@ -16,7 +16,6 @@ let datadogLogo = chrome.extension.getURL("js/6f820f6928c60a37143bcb0f07adc7eb.p
 let logrocketLogo = chrome.extension.getURL("js/111b99a33e6aad0950eb4204fc06dabe.png")
 
 let ACCEPTABLE_SAMPLE_RATE = 50
-let SENTRY_DOMAIN = 'sentry.io'
 
 interface IProps {
 }
