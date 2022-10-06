@@ -37,7 +37,8 @@ interface IState {
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
-  dsn?: string;
+  dsnHost?: string;
+  projectId?: string;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -59,7 +60,8 @@ class Popup extends React.Component<IProps, IState> {
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
-      dsn: '',
+      dsnHost: '',
+      projectId: '',
     };
   }
 
@@ -149,7 +151,8 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.usesSentryPerformance;", (results) => this.setState({ usesSentryPerformance: results[0] === "true" }));
     this.executeScript("localStorage.sentryPerformanceSampleRate;", (results) => this.setState({ sentryPerformanceSampleRate: results[0] }));
     this.executeScript("localStorage.sentryErrorSampleRate;", (results) => this.setState({ sentryErrorSampleRate: results[0] }));
-    this.executeScript("localStorage.dsn;", (results) => this.setState({ dsn: results[0] }));
+    this.executeScript("localStorage.dsnHost;", (results) => this.setState({ dsnHost: results[0] }));
+    this.executeScript("localStorage.projectId;", (results) => this.setState({ projectId: results[0] }));
   }
 
   render() {
@@ -176,7 +179,7 @@ class Popup extends React.Component<IProps, IState> {
                     <span className="location">
                       {this.state.sentryErrorSampleRate ? (
                         <span className={(this.state.sentryErrorSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
-                          Sampling Errors at {this.state.sentryErrorSampleRate}%
+                          Error Sampling: {this.state.sentryErrorSampleRate}% (client-side)
                         </span>
                       ) : (
                         <span className="warning">
@@ -191,7 +194,7 @@ class Popup extends React.Component<IProps, IState> {
                       <span className="location">
                         <span> Using Sentry performance</span> <br/>
                         <span className={(this.state.sentryPerformanceSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
-                          Sampling transactions at {this.state.sentryPerformanceSampleRate}%
+                          Transaction Sampling: {this.state.sentryPerformanceSampleRate}% (client-side)
                         </span>
                       </span>
                     ) : (
@@ -202,7 +205,7 @@ class Popup extends React.Component<IProps, IState> {
                   </li>
                   <li>
                     <span className="text-muted location">
-                      Sending events to <b>{this.state.dsn.includes(SENTRY_DOMAIN) ? "SaaS" : "Self-Hosted Sentry"}</b> via <a href={this.state.dsn}>{this.state.dsn}</a>
+                      Sending events to <b>{this.state.dsnHost}</b> as project ID <b>{this.state.projectId}</b>
                     </span>
                   </li>
                   <li>
