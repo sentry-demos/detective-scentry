@@ -160,7 +160,7 @@ class Popup extends React.Component<IProps, IState> {
       <div className="popup-padded">
         <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
-          <Card.Img src={santoImg} className="img-small" />
+          <Card.Img src={santoImg} />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
             Woof! My name is Santo and I detect SDKs.
