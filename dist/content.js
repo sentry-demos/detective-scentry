@@ -18,6 +18,7 @@ localStorage.sentryPerformanceSampleRate  = sentryPerformanceSampleRate();
 localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
 localStorage.dsnHost = dsnHost();
 localStorage.projectId = projectId();
+localStorage.sdkVersion = getSdkVersion();
 
 function usesSentryPerformance() {
 	if (typeof __SENTRY__ != 'undefined') {
@@ -77,5 +78,12 @@ function getDsn() {
 	if (typeof __SENTRY__ != 'undefined') {
 		let options = __SENTRY__.hub.getClient().getOptions()
 		return options.dsn
+	}
+}
+
+function getSdkVersion() {
+	if (typeof __SENTRY__ != 'undefined') {
+		let options = __SENTRY__.hub.getClient().getOptions()
+		return options._metadata ? options._metadata.sdk.version : '<unable to determine>'
 	}
 }

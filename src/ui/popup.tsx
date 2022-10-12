@@ -38,6 +38,7 @@ interface IState {
   sentryErrorSampleRate?: number;
   dsnHost?: string;
   projectId?: string;
+  sdkVersion?: string;
 }
 
 class Popup extends React.Component<IProps, IState> {
@@ -61,6 +62,7 @@ class Popup extends React.Component<IProps, IState> {
       sentryErrorSampleRate: 0,
       dsnHost: '',
       projectId: '',
+      sdkVersion: '',
     };
   }
 
@@ -152,6 +154,7 @@ class Popup extends React.Component<IProps, IState> {
     this.executeScript("localStorage.sentryErrorSampleRate;", (results) => this.setState({ sentryErrorSampleRate: results[0] }));
     this.executeScript("localStorage.dsnHost;", (results) => this.setState({ dsnHost: results[0] }));
     this.executeScript("localStorage.projectId;", (results) => this.setState({ projectId: results[0] }));
+    this.executeScript("localStorage.sdkVersion;", (results) => this.setState({ sdkVersion: results[0] }));
   }
 
   render() {
@@ -189,7 +192,7 @@ class Popup extends React.Component<IProps, IState> {
                     </span>
                   </li>
                   <li>
-                    {this.state.usesSentryPerformance ? (  
+                    {this.state.usesSentryPerformance ? (
                       <span className="location">
                         <span> Using Sentry performance</span> <br/>
                         <span className={(this.state.sentryPerformanceSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
@@ -210,7 +213,12 @@ class Popup extends React.Component<IProps, IState> {
                   <li>
                     <span className="text-muted location">
                       Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
-                    </span>                    
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-muted location">
+                      Sentry JS SDK version is at: <b>{this.state.sdkVersion}</b>
+                    </span>
                   </li>
                 </ul>
               </ListGroup.Item>
