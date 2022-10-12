@@ -59,5 +59,6 @@ img {
 }
 
 .card-img {
+    width: 55% !important;
     padding-bottom: 1rem;
 }
