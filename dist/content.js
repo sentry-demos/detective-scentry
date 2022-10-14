@@ -44,14 +44,16 @@ function sentryPerformanceSampleRate() {
 
 function sentryErrorSampleRate() {
 	// assume we care only about more recent SDKs
+	let sampleRate = '<unable to determine>'
 	if (typeof __SENTRY__ != 'undefined') {
 		sentryConfig = __SENTRY__.hub.getClient().getOptions()
-		sampleRate = sentryConfig.sampleRate ? sentryConfig.sampleRate : 1
-		return sampleRate * 100 // convert into a human-readable percentage
+		configuredRate = sentryConfig.sampleRate
+		sampleRate = configuredRate ? configuredRate*100 : sampleRate
 	}
 
-	return null
+	return sampleRate
 }
+
 
 function dsnHost() {
 	dsn = getDsn()
