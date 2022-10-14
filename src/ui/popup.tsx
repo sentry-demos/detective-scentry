@@ -178,20 +178,6 @@ class Popup extends React.Component<IProps, IState> {
                 />
                 <ul>
                   <li>
-                    <span className="location">
-                      {this.state.sentryErrorSampleRate ? (
-                        <span className={(this.state.sentryErrorSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
-                          Error Sampling: {this.state.sentryErrorSampleRate}% (client-side)
-                        </span>
-                      ) : (
-                        <span className="warning">
-                          Could not detect an error sample rate
-                        </span>
-                      )
-                    }
-                    </span>
-                  </li>
-                  <li>
                     {this.state.usesSentryPerformance ? (
                       <span className="location">
                         <span> Using Sentry performance</span> <br/>
@@ -204,6 +190,20 @@ class Popup extends React.Component<IProps, IState> {
                         Does not use Sentry performance!
                       </span>
                     )}
+                  </li>
+                  <li>
+                    <span className="location">
+                      {this.state.sentryErrorSampleRate ? (
+                        <span className={(this.state.sentryErrorSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : ""}>
+                          Error Sampling: {this.state.sentryErrorSampleRate}% (client-side)
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect an error sample rate
+                        </span>
+                      )
+                    }
+                    </span>
                   </li>
                   <li>
                     <span className="text-muted location">
