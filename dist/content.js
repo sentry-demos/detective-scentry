@@ -1,16 +1,23 @@
-localStorage.hasSentry = !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
-localStorage.hasNewRelic = !!window.newrelic;
-localStorage.hasBugsnag = !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient;
-localStorage.hasRollbar = !!window._rollbarDidLoad;
-localStorage.hasDatadog = !!window.DD_RUM;
-localStorage.hasLogRocket = !!window._lr_loaded;
+localStorage.hasSentry 				= !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
+localStorage.hasNewRelic 			= !!window.newrelic;
+localStorage.hasBugsnag 			= !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient;
+localStorage.hasRollbar 			= !!window._rollbarDidLoad;
+localStorage.hasDatadog 			= !!window.DD_RUM;
+localStorage.hasDatadogLogs 	= !!window.DD_LOGS;
+localStorage.hasLogRocket 		= !!window._lr_loaded;
+localStorage.hasAppDynamics 	= !!window.ADRUM;
+localStorage.hasSessionStack 	= !!window.SessionStack;
+localStorage.hasFullStory     = !!(window.FS && window.FS.getCurrentSessionURL());
 
-localStorage.sentryLocation = localStorage.hasSentry ? window.location.href : ''
-localStorage.newrelicLocation = localStorage.hasNewRelic ? window.location.href : ''
-localStorage.bugsnagLocation = localStorage.hasBugsnag ? window.location.href : ''
-localStorage.rollbarLocation = localStorage.hasRollbar ? window.location.href : ''
-localStorage.datadogLocation = localStorage.hasDatadog ? window.location.href : ''
-localStorage.logrocketLocation = localStorage.hasLogRocket ? window.location.href : ''
+localStorage.sentryLocation 			= localStorage.hasSentry ? window.location.href : ''
+localStorage.newrelicLocation 		= localStorage.hasNewRelic ? window.location.href : ''
+localStorage.bugsnagLocation 			= localStorage.hasBugsnag ? window.location.href : ''
+localStorage.rollbarLocation 			= localStorage.hasRollbar ? window.location.href : ''
+localStorage.datadogLocation 			= localStorage.hasDatadog ? window.location.href : ''
+localStorage.datadogLogsLocation 	= localStorage.hasDatadogLogs ? window.location.href : ''
+localStorage.logrocketLocation 		= localStorage.hasLogRocket ? window.location.href : ''
+localStorage.appDynamicsLocation 	= localStorage.hasAppDynamics ? window.location.href : ''
+localStorage.fullStoryLocation    = localStorage.hasFullStory ? window.location.href : ''
 
 // Additional data for pages where Sentry was sniffed
 localStorage.usesSentryPerformance = usesSentryPerformance();
