@@ -11,20 +11,23 @@ import ListGroup from 'react-bootstrap/ListGroup';
 //
 // When adding new images, copy them manually into dist/images/.
 // webpack doesn't automatically bundle them.
-let santoImg          = chrome.extension.getURL("images/santo.jpg")
-let sentryLogo        = chrome.extension.getURL("images/sentry-logo.png")
-let bugsnagLogo       = chrome.extension.getURL("images/bugsnag-logo.png")
-let rollbarLogo       = chrome.extension.getURL("images/rollbar-logo.png")
-let newrelicLogo      = chrome.extension.getURL("images/newrelic-logo.png")
-let datadogLogo       = chrome.extension.getURL("images/datadog-logo.png")
-let logrocketLogo     = chrome.extension.getURL("images/logrocket-logo.png")
-let datadogLogsLogo   = chrome.extension.getURL("images/datadog-logs-logo.png")
-let appDynamicsLogo   = chrome.extension.getURL("images/appdynamics-logo.png")
-let fullStoryLogo     = chrome.extension.getURL("images/fullstory-logo.png")
-let sessionStackLogo  = chrome.extension.getURL("images/sessionstack-logo.png")
+const santoImg          = "images/santo.jpg"
+const santoChicken      = "images/santochicken.jpg"
+const santoLeaves       = "images/santoleaves.jpg"
+const santoFloor        = "images/santofloor.jpg"
+const sentryLogo        = chrome.extension.getURL("images/sentry-logo.png")
+const bugsnagLogo       = chrome.extension.getURL("images/bugsnag-logo.png")
+const rollbarLogo       = chrome.extension.getURL("images/rollbar-logo.png")
+const newrelicLogo      = chrome.extension.getURL("images/newrelic-logo.png")
+const datadogLogo       = chrome.extension.getURL("images/datadog-logo.png")
+const logrocketLogo     = chrome.extension.getURL("images/logrocket-logo.png")
+const datadogLogsLogo   = chrome.extension.getURL("images/datadog-logs-logo.png")
+const appDynamicsLogo   = chrome.extension.getURL("images/appdynamics-logo.png")
+const fullStoryLogo     = chrome.extension.getURL("images/fullstory-logo.png")
+const sessionStackLogo  = chrome.extension.getURL("images/sessionstack-logo.png")
+const santoImages       = [santoImg, santoChicken, santoLeaves, santoFloor]
 
-
-let ACCEPTABLE_SAMPLE_RATE = 50
+const ACCEPTABLE_SAMPLE_RATE = 50
 
 interface IProps {
 }
@@ -154,6 +157,12 @@ class Popup extends React.Component<IProps, IState> {
     );
   }
 
+  randomSantoImage() {
+    const randomIndex = Math.floor(Math.random() * santoImages.length);
+    const randomSanto = santoImages[randomIndex]
+    return chrome.extension.getURL(randomSanto);
+  }
+
   componentDidMount() {
     // check for Sentry
     this.executeScript("localStorage.hasSentry;", (results) => this.setState({ hasSentry: results[0] === "true" }) );
@@ -195,7 +204,7 @@ class Popup extends React.Component<IProps, IState> {
       <div className="popup-padded">
         <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
-          <Card.Img src={santoImg} />
+          <Card.Img src={this.randomSantoImage()} />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
             Woof! My name is Santo and I detect SDKs.
