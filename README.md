@@ -2,8 +2,11 @@
 
 ![](images/readme-screenshot.png)
 
+## QA
+- https://sentryv8.vercel.app/
+- https://sentryv7.vercel.app/
 
-## To run:
+## To run locally:
 ```
 npx webpack # it will update dist
 ```
