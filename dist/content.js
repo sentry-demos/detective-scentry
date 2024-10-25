@@ -48,42 +48,31 @@ localStorage.dsnHost = dsnHost();
 localStorage.projectId = projectId();
 localStorage.sdkVersion = getSdkVersion();
 
-// Assume we care only about more recent JS SDKs (v7+)
 function getOptions() {
   if (typeof __SENTRY__ != "undefined") {
     // check for v7 SDK
-    let options = __SENTRY__.hub?.getClient().getOptions();
+    let options = __SENTRY__.hub?.getClient()?.getOptions();
     if (typeof options != "undefined") {
       return options;
     }
 
     // check for v8 SDK
     options = __SENTRY__[__SENTRY__.version]?.defaultCurrentScope
-      .getClient()
-      .getOptions();
+      ?.getClient()
+      ?.getOptions();
     if (typeof options != "undefined") {
       return options;
     }
   }
 
+  // Assume that for detailed information,
+  // we care only about more recent JS SDKs (v7+)
   return {};
 }
 
 function usesSentryPerformance() {
   if (typeof __SENTRY__ != "undefined") {
-    // access options for v7 SDK
-    let options = __SENTRY__.hub?.getClient().getOptions();
-    if (typeof options != "undefined") {
-      return !!options.tracesSampleRate || !!options.tracesSampler;
-    }
-
-    // access options for v8 SDK
-    options = __SENTRY__[__SENTRY__.version]?.defaultCurrentScope
-      .getClient()
-      .getOptions();
-    if (typeof options != "undefined") {
-      return !!options.tracesSampleRate || !!options.tracesSampler;
-    }
+    return !!options.tracesSampleRate || !!options.tracesSampler;
   }
 
   // The logic here is that performance did not exist in older SDKs (that used Raven instead
@@ -104,7 +93,7 @@ function sentryPerformanceSampleRate() {
 function sentryErrorSampleRate() {
   let errorSampleRate = "<unable to determine>";
   configuredRate = options?.sampleRate;
-  errorSampleRate = configuredRate ? configuredRate * 100 : errorSampleRate;
+  errorSampleRate = !!configuredRate ? configuredRate * 100 : errorSampleRate;
 
   return errorSampleRate;
 }
@@ -137,5 +126,5 @@ function getDsn() {
 function getSdkVersion() {
   return !!options?._metadata
     ? options._metadata.sdk.version
-    : "<unable to determine>";
+    : "<unable to determine, likely pre-6.0>";
 }
