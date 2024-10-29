@@ -126,5 +126,5 @@ function getDsn() {
 function getSdkVersion() {
   return !!options?._metadata
     ? options._metadata.sdk.version
-    : "<unable to determine, likely pre-6.0>";
+    : "<unable to determine>";
 }
