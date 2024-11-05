@@ -1,3 +1,5 @@
+console.log("yooooooo");
+
 localStorage.hasSentry =
   !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
 localStorage.hasNewRelic = !!window.newrelic;
@@ -126,5 +128,5 @@ function getDsn() {
 function getSdkVersion() {
   return !!options?._metadata
     ? options._metadata.sdk.version
-    : "<unable to determine, likely pre-6.0>";
+    : "<unable to determine>";
 }

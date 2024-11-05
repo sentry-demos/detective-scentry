@@ -167,138 +167,155 @@ class Popup extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    // check for Sentry
-    this.executeScript(
-      () => localStorage.hasSentry,
-      (result) => this.setState({ hasSentry: result === "true" })
-    );
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0].id;
 
-    this.executeScript(
-      () => localStorage.hasNewRelic,
-      (result) => this.setState({ hasNewRelic: result === "true" })
-    );
+      // Inject `inject.js` on popup open
+      // @ts-ignore
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabId },
+          files: ["inject.js"],
+        },
+        () => {
+          console.log("Detecting SDKs...");
 
-    this.executeScript(
-      () => localStorage.hasBugsnag,
-      (result) => this.setState({ hasBugsnag: result === "true" })
-    );
+          // Retrieve detection results after `inject.js` runs
+          this.executeScript(
+            () => localStorage.hasSentry,
+            (result) => this.setState({ hasSentry: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasRollbar,
-      (result) => this.setState({ hasRollbar: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasNewRelic,
+            (result) => this.setState({ hasNewRelic: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasDatadog,
-      (result) => this.setState({ hasDatadog: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasBugsnag,
+            (result) => this.setState({ hasBugsnag: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasDatadogLogs,
-      (result) => this.setState({ hasDatadogLogs: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasRollbar,
+            (result) => this.setState({ hasRollbar: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasLogRocket,
-      (result) => this.setState({ hasLogRocket: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasDatadog,
+            (result) => this.setState({ hasDatadog: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasAppDynamics,
-      (result) => this.setState({ hasAppDynamics: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasDatadogLogs,
+            (result) => this.setState({ hasDatadogLogs: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasFullStory,
-      (result) => this.setState({ hasFullStory: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasLogRocket,
+            (result) => this.setState({ hasLogRocket: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.hasSessionStack,
-      (result) => this.setState({ hasSessionStack: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.hasAppDynamics,
+            (result) => this.setState({ hasAppDynamics: result === "true" })
+          );
 
-    // Retrieve location data from localStorage
-    this.executeScript(
-      () => localStorage.sentryLocation,
-      (result) => this.setState({ sentryLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.hasFullStory,
+            (result) => this.setState({ hasFullStory: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.newrelicLocation,
-      (result) => this.setState({ newrelicLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.hasSessionStack,
+            (result) => this.setState({ hasSessionStack: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.bugsnagLocation,
-      (result) => this.setState({ bugsnagLocation: result })
-    );
+          // Retrieve location data from localStorage
+          this.executeScript(
+            () => localStorage.sentryLocation,
+            (result) => this.setState({ sentryLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.rollbarLocation,
-      (result) => this.setState({ rollbarLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.newrelicLocation,
+            (result) => this.setState({ newrelicLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.datadogLocation,
-      (result) => this.setState({ datadogLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.bugsnagLocation,
+            (result) => this.setState({ bugsnagLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.datadogLogsLocation,
-      (result) => this.setState({ datadogLogsLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.rollbarLocation,
+            (result) => this.setState({ rollbarLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.logrocketLocation,
-      (result) => this.setState({ logrocketLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.datadogLocation,
+            (result) => this.setState({ datadogLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.appDynamicsLocation,
-      (result) => this.setState({ appDynamicsLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.datadogLogsLocation,
+            (result) => this.setState({ datadogLogsLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.fullStoryLocation,
-      (result) => this.setState({ fullStoryLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.logrocketLocation,
+            (result) => this.setState({ logrocketLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.sessionStackLocation,
-      (result) => this.setState({ sessionStackLocation: result })
-    );
+          this.executeScript(
+            () => localStorage.appDynamicsLocation,
+            (result) => this.setState({ appDynamicsLocation: result })
+          );
 
-    // Check for Sentry-specific values
-    this.executeScript(
-      () => localStorage.usesSentryPerformance,
-      (result) => this.setState({ usesSentryPerformance: result === "true" })
-    );
+          this.executeScript(
+            () => localStorage.fullStoryLocation,
+            (result) => this.setState({ fullStoryLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.sentryPerformanceSampleRate,
-      (result) => this.setState({ sentryPerformanceSampleRate: result })
-    );
+          this.executeScript(
+            () => localStorage.sessionStackLocation,
+            (result) => this.setState({ sessionStackLocation: result })
+          );
 
-    this.executeScript(
-      () => localStorage.sentryErrorSampleRate,
-      (result) => this.setState({ sentryErrorSampleRate: result })
-    );
+          // Check for Sentry-specific values
+          this.executeScript(
+            () => localStorage.usesSentryPerformance,
+            (result) =>
+              this.setState({ usesSentryPerformance: result === "true" })
+          );
 
-    this.executeScript(
-      () => localStorage.dsnHost,
-      (result) => this.setState({ dsnHost: result })
-    );
+          this.executeScript(
+            () => localStorage.sentryPerformanceSampleRate,
+            (result) => this.setState({ sentryPerformanceSampleRate: result })
+          );
 
-    this.executeScript(
-      () => localStorage.projectId,
-      (result) => this.setState({ projectId: result })
-    );
+          this.executeScript(
+            () => localStorage.sentryErrorSampleRate,
+            (result) => this.setState({ sentryErrorSampleRate: result })
+          );
 
-    this.executeScript(
-      () => localStorage.sdkVersion,
-      (result) => this.setState({ sdkVersion: result })
-    );
+          this.executeScript(
+            () => localStorage.dsnHost,
+            (result) => this.setState({ dsnHost: result })
+          );
+
+          this.executeScript(
+            () => localStorage.projectId,
+            (result) => this.setState({ projectId: result })
+          );
+
+          this.executeScript(
+            () => localStorage.sdkVersion,
+            (result) => this.setState({ sdkVersion: result })
+          );
+        }
+      );
+    });
   }
 
   render() {
