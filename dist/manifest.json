@@ -1,40 +1,24 @@
 {
-    "name": "Scentry",
-    "version": "0.0.3",
-    "manifest_version": 2,
-    "description": "Finds Sentry and other SDKs",
-    "icons": {
-      "16": "icons/santo-16.png",
-      "32": "icons/santo-32.png",
-      "64": "icons/santo-64.png"
-    },
-    "web_accessible_resources": [
-      "js/*",
-      "content.js",
-      "*.map",
-      "*.png",
-      "*.jpg"
-    ],
-    "browser_action": {
-      "default_title": "Santo SDK Detector",
-      "default_popup": "popup.html"
-    },
-    "default_locale": "en",
-    "permissions": [
-      "https://*/*",
-      "activeTab",
-      "tabs",
-      "<all_urls>"
-    ],
-    // "content_security_policy": "default-src 'self';",
-    "content_scripts": [
-      {
-        "matches": ["http://*/*", "https://*/*"],
-        "js": [
-          "inject.js"
-        ],
-        "all_frames": true
-      }
-    ]
-  }
-
+  "name": "Scentry",
+  "version": "0.0.4",
+  "manifest_version": 3,
+  "description": "Finds Sentry and other SDKs",
+  "icons": {
+    "16": "icons/santo-16.png",
+    "32": "icons/santo-32.png",
+    "64": "icons/santo-64.png"
+  },
+  "default_locale": "en",
+  "action": {
+    "default_title": "Santo SDK Detector",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["scripting", "storage", "activeTab", "tabs"],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/*", "content.js", "*.map", "*.png", "*.jpg"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": ["https://*/*", "http://*/*"]
+}

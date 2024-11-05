@@ -6,13 +6,13 @@
  * @see    {@link http://stackoverflow.com/questions/20499994/access-window-variable-from-content-script}
  */
 function injectScript(file_path, tag) {
-    var node = document.getElementsByTagName(tag)[0];
-    var script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', file_path);
-    node.appendChild(script);
+  var node = document.getElementsByTagName(tag)[0];
+  var script = document.createElement("script");
+  script.setAttribute("type", "text/javascript");
+  script.setAttribute("src", file_path);
+  node.appendChild(script);
 }
 
 localStorage.hasSentry = false;
 localStorage.hasNewRelic = false;
-injectScript(chrome.extension.getURL('content.js'), 'body');
+injectScript(chrome.runtime.getURL("content.js"), "body");

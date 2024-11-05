@@ -1,36 +1,35 @@
-import "../styles/popup.css"
+import "../styles/popup.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import * as React from "react"
-import * as ReactDOM from "react-dom"
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
+import Card from "react-bootstrap/Card";
+import ListGroup from "react-bootstrap/ListGroup";
 
 // Images are referenced from dist/images/.
 //
 // When adding new images, copy them manually into dist/images/.
 // webpack doesn't automatically bundle them.
-const santoImg          = "images/santo.jpg"
-const santoChicken      = "images/santochicken.jpg"
-const santoLeaves       = "images/santoleaves.jpg"
-const santoFloor        = "images/santofloor.jpg"
-const sentryLogo        = chrome.extension.getURL("images/sentry-logo.png")
-const bugsnagLogo       = chrome.extension.getURL("images/bugsnag-logo.png")
-const rollbarLogo       = chrome.extension.getURL("images/rollbar-logo.png")
-const newrelicLogo      = chrome.extension.getURL("images/newrelic-logo.png")
-const datadogLogo       = chrome.extension.getURL("images/datadog-logo.png")
-const logrocketLogo     = chrome.extension.getURL("images/logrocket-logo.png")
-const datadogLogsLogo   = chrome.extension.getURL("images/datadog-logs-logo.png")
-const appDynamicsLogo   = chrome.extension.getURL("images/appdynamics-logo.png")
-const fullStoryLogo     = chrome.extension.getURL("images/fullstory-logo.png")
-const sessionStackLogo  = chrome.extension.getURL("images/sessionstack-logo.png")
-const santoImages       = [santoImg, santoChicken, santoLeaves, santoFloor]
+const santoImg = "images/santo.jpg";
+const santoChicken = "images/santochicken.jpg";
+const santoLeaves = "images/santoleaves.jpg";
+const santoFloor = "images/santofloor.jpg";
+const sentryLogo = chrome.runtime.getURL("images/sentry-logo.png");
+const bugsnagLogo = chrome.runtime.getURL("images/bugsnag-logo.png");
+const rollbarLogo = chrome.runtime.getURL("images/rollbar-logo.png");
+const newrelicLogo = chrome.runtime.getURL("images/newrelic-logo.png");
+const datadogLogo = chrome.runtime.getURL("images/datadog-logo.png");
+const logrocketLogo = chrome.runtime.getURL("images/logrocket-logo.png");
+const datadogLogsLogo = chrome.runtime.getURL("images/datadog-logs-logo.png");
+const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
+const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
+const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
+const santoImages = [santoImg, santoChicken, santoLeaves, santoFloor];
 
-const ACCEPTABLE_SAMPLE_RATE = 50
+const ACCEPTABLE_SAMPLE_RATE = 50;
 
-interface IProps {
-}
+interface IProps {}
 
 interface IState {
   hasSentry?: boolean;
@@ -75,22 +74,22 @@ class Popup extends React.Component<IProps, IState> {
       hasAppDynamics: false,
       hasFullStory: false,
       hasSessionStack: false,
-      sentryLocation: '',
-      newrelicLocation: '',
-      bugsnagLocation: '',
-      rollbarLocation: '',
-      datadogLocation: '',
-      datadogLogsLocation: '',
-      logrocketLocation: '',
-      appDynamicsLocation: '',
-      fullStoryLocation: '',
-      sessionStackLocation: '',
+      sentryLocation: "",
+      newrelicLocation: "",
+      bugsnagLocation: "",
+      rollbarLocation: "",
+      datadogLocation: "",
+      datadogLogsLocation: "",
+      logrocketLocation: "",
+      appDynamicsLocation: "",
+      fullStoryLocation: "",
+      sessionStackLocation: "",
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
-      dsnHost: '',
-      projectId: '',
-      sdkVersion: '',
+      dsnHost: "",
+      projectId: "",
+      sdkVersion: "",
     };
   }
 
@@ -107,7 +106,8 @@ class Popup extends React.Component<IProps, IState> {
         let hasBeenFound = false;
 
         debugger; // can i use 'this' here?
-        that.executeScript("Array.from(document.getElementsByTagName('script')).map((h) => h.outerHTML);",
+        that.executeScript(
+          "Array.from(document.getElementsByTagName('script')).map((h) => h.outerHTML);",
           (results) => {
             let i = 0;
             while (i < results[0].length && !hasBeenFound) {
@@ -141,62 +141,164 @@ class Popup extends React.Component<IProps, IState> {
     );
   }
 
-  executeScript(code, successFunc) {
-    chrome.tabs.executeScript(
-      { code },
-      (results) => {
-        if (
-          results &&
-          results.length > 0 &&
-          !!results[0]
-          // results[0] === "true"
-        ) {
-          successFunc(results);
+  executeScript(func, successFunc) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0].id;
+
+      // @ts-ignore
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabId },
+          func: func,
+        },
+        (results) => {
+          if (results && results.length > 0 && results[0].result) {
+            successFunc(results[0].result);
+          }
         }
-      }
-    );
+      );
+    });
   }
 
   randomSantoImage() {
     const randomIndex = Math.floor(Math.random() * santoImages.length);
-    const randomSanto = santoImages[randomIndex]
-    return chrome.extension.getURL(randomSanto);
+    const randomSanto = santoImages[randomIndex];
+    return chrome.runtime.getURL(randomSanto);
   }
 
   componentDidMount() {
     // check for Sentry
-    this.executeScript("localStorage.hasSentry;", (results) => this.setState({ hasSentry: results[0] === "true" }) );
-    this.executeScript("localStorage.hasNewRelic;", (results) => this.setState({ hasNewRelic: results[0] === "true" }));
-    this.executeScript("localStorage.hasBugsnag;", (results) => this.setState({ hasBugsnag: results[0] === "true" }));
-    this.executeScript("localStorage.hasRollbar;", (results) => this.setState({ hasRollbar: results[0] === "true" }));
-    this.executeScript("localStorage.hasDatadog;", (results) => this.setState({ hasDatadog: results[0] === "true" }));
-    this.executeScript("localStorage.hasDatadogLogs;", (results) => this.setState({ hasDatadogLogs: results[0] === "true" }));
-    this.executeScript("localStorage.hasLogRocket;", (results) => this.setState({ hasLogRocket: results[0] === "true" }));
-    this.executeScript("localStorage.hasAppDynamics;", (results) => this.setState({ hasAppDynamics: results[0] === "true" }));
-    this.executeScript("localStorage.hasFullStory;", (results) => this.setState({ hasFullStory: results[0] === "true" }));
-    this.executeScript("localStorage.hasSessionStack;", (results) => this.setState({ hasSessionStack: results[0] === "true" }));
+    this.executeScript(
+      () => localStorage.hasSentry,
+      (result) => this.setState({ hasSentry: result === "true" })
+    );
 
-    // get location where observability tool was detected.
-    // This is done so that if a tool was detected in a third-party frame,
-    // like Recaptcha, we can be aware of it and determine whether it's a false positive.
-    this.executeScript("localStorage.sentryLocation;", (results) => this.setState({ sentryLocation: results[0]}) );
-    this.executeScript("localStorage.newrelicLocation;", (results) => this.setState({ newrelicLocation: results[0]}) );
-    this.executeScript("localStorage.bugsnagLocation;", (results) => this.setState({ sentryLocation: results[0]}) );
-    this.executeScript("localStorage.rollbarLocation;", (results) => this.setState({ rollbarLocation: results[0]}) );
-    this.executeScript("localStorage.datadogLocation;", (results) => this.setState({ datadogLocation: results[0]}) );
-    this.executeScript("localStorage.datadogLogsLocation;", (results) => this.setState({ datadogLogsLocation: results[0]}) );
-    this.executeScript("localStorage.logrocketLocation;", (results) => this.setState({ logrocketLocation: results[0]}) );
-    this.executeScript("localStorage.appDynamicsLocation;", (results) => this.setState({ appDynamicsLocation: results[0]}) );
-    this.executeScript("localStorage.fullStoryLocation;", (results) => this.setState({ fullStoryLocation: results[0]}) );
-    this.executeScript("localStorage.sessionStackLocation;", (results) => this.setState({ sessionStackLocation: results[0]}) );
+    this.executeScript(
+      () => localStorage.hasNewRelic,
+      (result) => this.setState({ hasNewRelic: result === "true" })
+    );
 
-    // Check for presence of Sentry-specific values
-    this.executeScript("localStorage.usesSentryPerformance;", (results) => this.setState({ usesSentryPerformance: results[0] === "true" }));
-    this.executeScript("localStorage.sentryPerformanceSampleRate;", (results) => this.setState({ sentryPerformanceSampleRate: results[0] }));
-    this.executeScript("localStorage.sentryErrorSampleRate;", (results) => this.setState({ sentryErrorSampleRate: results[0] }));
-    this.executeScript("localStorage.dsnHost;", (results) => this.setState({ dsnHost: results[0] }));
-    this.executeScript("localStorage.projectId;", (results) => this.setState({ projectId: results[0] }));
-    this.executeScript("localStorage.sdkVersion;", (results) => this.setState({ sdkVersion: results[0] }));
+    this.executeScript(
+      () => localStorage.hasBugsnag,
+      (result) => this.setState({ hasBugsnag: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasRollbar,
+      (result) => this.setState({ hasRollbar: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasDatadog,
+      (result) => this.setState({ hasDatadog: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasDatadogLogs,
+      (result) => this.setState({ hasDatadogLogs: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasLogRocket,
+      (result) => this.setState({ hasLogRocket: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasAppDynamics,
+      (result) => this.setState({ hasAppDynamics: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasFullStory,
+      (result) => this.setState({ hasFullStory: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.hasSessionStack,
+      (result) => this.setState({ hasSessionStack: result === "true" })
+    );
+
+    // Retrieve location data from localStorage
+    this.executeScript(
+      () => localStorage.sentryLocation,
+      (result) => this.setState({ sentryLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.newrelicLocation,
+      (result) => this.setState({ newrelicLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.bugsnagLocation,
+      (result) => this.setState({ bugsnagLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.rollbarLocation,
+      (result) => this.setState({ rollbarLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.datadogLocation,
+      (result) => this.setState({ datadogLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.datadogLogsLocation,
+      (result) => this.setState({ datadogLogsLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.logrocketLocation,
+      (result) => this.setState({ logrocketLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.appDynamicsLocation,
+      (result) => this.setState({ appDynamicsLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.fullStoryLocation,
+      (result) => this.setState({ fullStoryLocation: result })
+    );
+
+    this.executeScript(
+      () => localStorage.sessionStackLocation,
+      (result) => this.setState({ sessionStackLocation: result })
+    );
+
+    // Check for Sentry-specific values
+    this.executeScript(
+      () => localStorage.usesSentryPerformance,
+      (result) => this.setState({ usesSentryPerformance: result === "true" })
+    );
+
+    this.executeScript(
+      () => localStorage.sentryPerformanceSampleRate,
+      (result) => this.setState({ sentryPerformanceSampleRate: result })
+    );
+
+    this.executeScript(
+      () => localStorage.sentryErrorSampleRate,
+      (result) => this.setState({ sentryErrorSampleRate: result })
+    );
+
+    this.executeScript(
+      () => localStorage.dsnHost,
+      (result) => this.setState({ dsnHost: result })
+    );
+
+    this.executeScript(
+      () => localStorage.projectId,
+      (result) => this.setState({ projectId: result })
+    );
+
+    this.executeScript(
+      () => localStorage.sdkVersion,
+      (result) => this.setState({ sdkVersion: result })
+    );
   }
 
   render() {
@@ -214,17 +316,23 @@ class Popup extends React.Component<IProps, IState> {
           <ListGroup variant="flush">
             {this.state.hasSentry ? (
               <ListGroup.Item>
-                <img
-                  className="sentry-logo"
-                  src={sentryLogo}
-                />
+                <img className="sentry-logo" src={sentryLogo} />
                 <ul>
                   <li>
                     {this.state.usesSentryPerformance ? (
                       <span className="location">
-                        <span> Using Sentry performance</span> <br/>
-                        <span className={(this.state.sentryPerformanceSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : "success"}>
-                          Transaction Sampling: {this.state.sentryPerformanceSampleRate}% (client-side)
+                        <span> Using Sentry performance</span> <br />
+                        <span
+                          className={
+                            this.state.sentryPerformanceSampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : "success"
+                          }
+                        >
+                          Transaction Sampling:{" "}
+                          {this.state.sentryPerformanceSampleRate}%
+                          (client-side)
                         </span>
                       </span>
                     ) : (
@@ -236,30 +344,42 @@ class Popup extends React.Component<IProps, IState> {
                   <li>
                     <span className="location">
                       {this.state.sentryErrorSampleRate ? (
-                        <span className={(this.state.sentryErrorSampleRate < ACCEPTABLE_SAMPLE_RATE) ? "warning" : ""}>
-                          Error Sampling: {this.state.sentryErrorSampleRate}% (client-side)
+                        <span
+                          className={
+                            this.state.sentryErrorSampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : ""
+                          }
+                        >
+                          Error Sampling: {this.state.sentryErrorSampleRate}%
+                          (client-side)
                         </span>
                       ) : (
                         <span className="warning">
                           Could not detect an error sample rate
                         </span>
-                      )
-                    }
+                      )}
                     </span>
                   </li>
                   <li>
                     <span className="text-muted location">
-                      Sending events to <b>{this.state.dsnHost}</b> as project ID <b>{this.state.projectId}</b>
+                      Sending events to <b>{this.state.dsnHost}</b> as project
+                      ID <b>{this.state.projectId}</b>
                     </span>
                   </li>
                   <li>
                     <span className="text-muted location">
-                      Sentry found at: <a href={this.state.sentryLocation}>{this.state.sentryLocation}</a>
+                      Sentry found at:{" "}
+                      <a href={this.state.sentryLocation}>
+                        {this.state.sentryLocation}
+                      </a>
                     </span>
                   </li>
                   <li>
                     <span className="text-muted location">
-                      Sentry JS SDK version is at: <b>{this.state.sdkVersion}</b>
+                      Sentry JS SDK version is at:{" "}
+                      <b>{this.state.sdkVersion}</b>
                     </span>
                   </li>
                 </ul>
@@ -269,12 +389,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasNewRelic ? (
               <ListGroup.Item>
-                <img
-                  className="nr-logo"
-                  src={newrelicLogo}
-                />
+                <img className="nr-logo" src={newrelicLogo} />
                 <p className="text-muted location">
-                  New Relic found at: <a href={this.state.newrelicLocation}>{this.state.newrelicLocation}</a>
+                  New Relic found at:{" "}
+                  <a href={this.state.newrelicLocation}>
+                    {this.state.newrelicLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -282,12 +402,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasBugsnag ? (
               <ListGroup.Item>
-                <img
-                  className="bugsnag-logo"
-                  src={bugsnagLogo}
-                />
+                <img className="bugsnag-logo" src={bugsnagLogo} />
                 <p className="text-muted location">
-                  Bugsnag found at: <a href={this.state.bugsnagLocation}>{this.state.bugsnagLocation}</a>
+                  Bugsnag found at:{" "}
+                  <a href={this.state.bugsnagLocation}>
+                    {this.state.bugsnagLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -295,12 +415,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasRollbar ? (
               <ListGroup.Item>
-                <img
-                  className="rollbar-logo"
-                  src={rollbarLogo}
-                />
+                <img className="rollbar-logo" src={rollbarLogo} />
                 <p className="text-muted location">
-                  Rollbar found at: <a href={this.state.rollbarLocation}>{this.state.rollbarLocation}</a>
+                  Rollbar found at:{" "}
+                  <a href={this.state.rollbarLocation}>
+                    {this.state.rollbarLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -308,12 +428,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasDatadog ? (
               <ListGroup.Item>
-                <img
-                  className="datadog-logo"
-                  src={datadogLogo}
-                />
+                <img className="datadog-logo" src={datadogLogo} />
                 <p className="text-muted location">
-                  Datadog found at: <a href={this.state.datadogLocation}>{this.state.datadogLocation}</a>
+                  Datadog found at:{" "}
+                  <a href={this.state.datadogLocation}>
+                    {this.state.datadogLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -321,12 +441,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasDatadogLogs ? (
               <ListGroup.Item>
-                <img
-                  className="datadog-logo"
-                  src={datadogLogsLogo}
-                />
+                <img className="datadog-logo" src={datadogLogsLogo} />
                 <p className="text-muted location">
-                  Datadog Logs found at: <a href={this.state.datadogLogsLocation}>{this.state.datadogLogsLocation}</a>
+                  Datadog Logs found at:{" "}
+                  <a href={this.state.datadogLogsLocation}>
+                    {this.state.datadogLogsLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -334,12 +454,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasLogRocket ? (
               <ListGroup.Item>
-                <img
-                  className="logrocket-logo"
-                  src={logrocketLogo}
-                />
+                <img className="logrocket-logo" src={logrocketLogo} />
                 <p className="text-muted location">
-                  Logrocket found at: <a href={this.state.logrocketLocation}>{this.state.logrocketLocation}</a>
+                  Logrocket found at:{" "}
+                  <a href={this.state.logrocketLocation}>
+                    {this.state.logrocketLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -347,12 +467,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasAppDynamics ? (
               <ListGroup.Item>
-                <img
-                  className="appdynamics-logo"
-                  src={appDynamicsLogo}
-                />
+                <img className="appdynamics-logo" src={appDynamicsLogo} />
                 <p className="text-muted location">
-                  AppDynamics found at: <a href={this.state.appDynamicsLocation}>{this.state.appDynamicsLocation}</a>
+                  AppDynamics found at:{" "}
+                  <a href={this.state.appDynamicsLocation}>
+                    {this.state.appDynamicsLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -360,12 +480,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasFullStory ? (
               <ListGroup.Item>
-                <img
-                  className="fullstory-logo"
-                  src={fullStoryLogo}
-                />
+                <img className="fullstory-logo" src={fullStoryLogo} />
                 <p className="text-muted location">
-                  FullStory found at: <a href={this.state.fullStoryLocation}>{this.state.fullStoryLocation}</a>
+                  FullStory found at:{" "}
+                  <a href={this.state.fullStoryLocation}>
+                    {this.state.fullStoryLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -373,12 +493,12 @@ class Popup extends React.Component<IProps, IState> {
             )}
             {this.state.hasSessionStack ? (
               <ListGroup.Item>
-                <img
-                  className="sessionstack-logo"
-                  src={sessionStackLogo}
-                />
+                <img className="sessionstack-logo" src={sessionStackLogo} />
                 <p className="text-muted location">
-                  SessionStack found at: <a href={this.state.sessionStackLocation}>{this.state.sessionStackLocation}</a>
+                  SessionStack found at:{" "}
+                  <a href={this.state.sessionStackLocation}>
+                    {this.state.sessionStackLocation}
+                  </a>
                 </p>
               </ListGroup.Item>
             ) : (
@@ -387,14 +507,12 @@ class Popup extends React.Component<IProps, IState> {
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
-          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic, Bugsnag, Rollbar, Datadog (RUM), +LogRocket
+          P.S. I currently only know how to detect 6 scents: Sentry, NewRelic,
+          Bugsnag, Rollbar, Datadog (RUM), +LogRocket
         </Card.Footer>
       </div>
     );
   }
 }
 
-ReactDOM.render(
-  <Popup />,
-  document.getElementById('root')
-)
+ReactDOM.render(<Popup />, document.getElementById("root"));
