@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "Scentry",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Finds Sentry and other SDKs",
+    "description": "Description of the extension"
+  }
+}

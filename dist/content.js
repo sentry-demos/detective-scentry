@@ -1,61 +1,50 @@
-// content.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "runDetection") {
     console.log("detecting SDKs...!");
-    detectAllSDKs();
+    const detectionResults = detectAllSDKs();
+    chrome.runtime.sendMessage({
+      action: "detectionResults",
+      data: detectionResults,
+    });
   }
 });
 
 function detectAllSDKs() {
-  localStorage.hasSentry =
-    !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
-  localStorage.hasNewRelic = !!window.newrelic;
-  localStorage.hasBugsnag =
-    !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient;
-  localStorage.hasRollbar = !!window._rollbarDidLoad;
-  localStorage.hasDatadog = !!window.DD_RUM;
-  localStorage.hasDatadogLogs = !!window.DD_LOGS;
-  localStorage.hasLogRocket = !!window._lr_loaded;
-  localStorage.hasAppDynamics = !!window.ADRUM;
-  localStorage.hasSessionStack = !!window.SessionStack;
-  localStorage.hasFullStory = !!(window.FS && window.FS.getCurrentSessionURL());
+  const options = getOptions();
 
-  localStorage.sentryLocation = localStorage.hasSentry
-    ? window.location.href
-    : "";
-  localStorage.newrelicLocation = localStorage.hasNewRelic
-    ? window.location.href
-    : "";
-  localStorage.bugsnagLocation = localStorage.hasBugsnag
-    ? window.location.href
-    : "";
-  localStorage.rollbarLocation = localStorage.hasRollbar
-    ? window.location.href
-    : "";
-  localStorage.datadogLocation = localStorage.hasDatadog
-    ? window.location.href
-    : "";
-  localStorage.datadogLogsLocation = localStorage.hasDatadogLogs
-    ? window.location.href
-    : "";
-  localStorage.logrocketLocation = localStorage.hasLogRocket
-    ? window.location.href
-    : "";
-  localStorage.appDynamicsLocation = localStorage.hasAppDynamics
-    ? window.location.href
-    : "";
-  localStorage.fullStoryLocation = localStorage.hasFullStory
-    ? window.location.href
-    : "";
+  return {
+    hasSentry: !!window.Sentry || !!window.__SENTRY__ || !!window.Raven,
+    hasNewRelic: !!window.newrelic,
+    hasBugsnag: !!window.Bugsnag || !!window.bugsnag || !!window.bugsnagClient,
+    hasRollbar: !!window._rollbarDidLoad,
+    hasDatadog: !!window.DD_RUM,
+    hasDatadogLogs: !!window.DD_LOGS,
+    hasLogRocket: !!window._lr_loaded,
+    hasAppDynamics: !!window.ADRUM,
+    hasSessionStack: !!window.SessionStack,
+    hasFullStory: !!(window.FS && window.FS.getCurrentSessionURL()),
 
-  // Additional data for pages where Sentry was sniffed
-  let options = getOptions();
-  localStorage.usesSentryPerformance = usesSentryPerformance();
-  localStorage.sentryPerformanceSampleRate = sentryPerformanceSampleRate();
-  localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
-  localStorage.dsnHost = dsnHost();
-  localStorage.projectId = projectId();
-  localStorage.sdkVersion = getSdkVersion();
+    sentryLocation: !!window.Sentry ? window.location.href : "",
+    newrelicLocation: !!window.newrelic ? window.location.href : "",
+    bugsnagLocation: !!window.Bugsnag ? window.location.href : "",
+    rollbarLocation: !!window._rollbarDidLoad ? window.location.href : "",
+    datadogLocation: !!window.DD_RUM ? window.location.href : "",
+    datadogLogsLocation: !!window.DD_LOGS ? window.location.href : "",
+    logrocketLocation: !!window._lr_loaded ? window.location.href : "",
+    appDynamicsLocation: !!window.ADRUM ? window.location.href : "",
+    fullStoryLocation: !!(window.FS && window.FS.getCurrentSessionURL())
+      ? window.location.href
+      : "",
+
+    usesSentryPerformance: usesSentryPerformance(),
+    sentryPerformanceSampleRate: sentryPerformanceSampleRate(),
+    sentryErrorSampleRate: sentryErrorSampleRate(),
+    dsnHost: dsnHost(),
+    projectId: projectId(),
+    sdkVersion: getSdkVersion(),
+  };
+
+  // Define any helper functions like usesSentryPerformance, sentryPerformanceSampleRate, etc.
 
   function getOptions() {
     if (typeof __SENTRY__ != "undefined") {

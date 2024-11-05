@@ -21,18 +21,16 @@ const nubbleBox = "images/nubble_box.jpeg";
 const nubbleHoliday = "images/nubble_holiday.jpeg";
 const nubbleSwitch = "images/nubble_switch.jpeg";
 
-const sentryLogo = chrome.extension.getURL("images/sentry-logo.png");
-const bugsnagLogo = chrome.extension.getURL("images/bugsnag-logo.png");
-const rollbarLogo = chrome.extension.getURL("images/rollbar-logo.png");
-const newrelicLogo = chrome.extension.getURL("images/newrelic-logo.png");
-const datadogLogo = chrome.extension.getURL("images/datadog-logo.png");
-const logrocketLogo = chrome.extension.getURL("images/logrocket-logo.png");
-const datadogLogsLogo = chrome.extension.getURL("images/datadog-logs-logo.png");
-const appDynamicsLogo = chrome.extension.getURL("images/appdynamics-logo.png");
-const fullStoryLogo = chrome.extension.getURL("images/fullstory-logo.png");
-const sessionStackLogo = chrome.extension.getURL(
-  "images/sessionstack-logo.png"
-);
+const sentryLogo = chrome.runtime.getURL("images/sentry-logo.png");
+const bugsnagLogo = chrome.runtime.getURL("images/bugsnag-logo.png");
+const rollbarLogo = chrome.runtime.getURL("images/rollbar-logo.png");
+const newrelicLogo = chrome.runtime.getURL("images/newrelic-logo.png");
+const datadogLogo = chrome.runtime.getURL("images/datadog-logo.png");
+const logrocketLogo = chrome.runtime.getURL("images/logrocket-logo.png");
+const datadogLogsLogo = chrome.runtime.getURL("images/datadog-logs-logo.png");
+const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
+const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
+const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
 const petImages = [
   santoImg,
   santoChicken,
@@ -45,15 +43,6 @@ const petImages = [
 ];
 
 const ACCEPTABLE_SAMPLE_RATE = 50;
-
-chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  const activeTab = tabs[0].id;
-  // Inject `content.js` if it's not already loaded on the active tab
-  chrome.tabs.executeScript(activeTab, { file: "content.js" }, () => {
-    // Once injected, send a message to trigger detection logic
-    chrome.tabs.sendMessage(activeTab, { action: "runDetection" });
-  });
-});
 
 interface IProps {}
 
@@ -183,94 +172,93 @@ class Popup extends React.Component<IProps, IState> {
   randomSantoImage() {
     const randomIndex = Math.floor(Math.random() * petImages.length);
     randomPet = petImages[randomIndex];
-    return chrome.extension.getURL(randomPet);
+    return chrome.runtime.getURL(randomPet);
   }
 
   componentDidMount() {
-    // check for Sentry
-    this.executeScript("localStorage.hasSentry;", (results) =>
-      this.setState({ hasSentry: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasNewRelic;", (results) =>
-      this.setState({ hasNewRelic: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasBugsnag;", (results) =>
-      this.setState({ hasBugsnag: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasRollbar;", (results) =>
-      this.setState({ hasRollbar: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasDatadog;", (results) =>
-      this.setState({ hasDatadog: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasDatadogLogs;", (results) =>
-      this.setState({ hasDatadogLogs: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasLogRocket;", (results) =>
-      this.setState({ hasLogRocket: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasAppDynamics;", (results) =>
-      this.setState({ hasAppDynamics: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasFullStory;", (results) =>
-      this.setState({ hasFullStory: results[0] === "true" })
-    );
-    this.executeScript("localStorage.hasSessionStack;", (results) =>
-      this.setState({ hasSessionStack: results[0] === "true" })
-    );
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTabId = tabs[0].id;
 
-    // get location where observability tool was detected.
-    // This is done so that if a tool was detected in a third-party frame,
-    // like Recaptcha, we can be aware of it and determine whether it's a false positive.
-    this.executeScript("localStorage.sentryLocation;", (results) =>
-      this.setState({ sentryLocation: results[0] })
-    );
-    this.executeScript("localStorage.newrelicLocation;", (results) =>
-      this.setState({ newrelicLocation: results[0] })
-    );
-    this.executeScript("localStorage.bugsnagLocation;", (results) =>
-      this.setState({ sentryLocation: results[0] })
-    );
-    this.executeScript("localStorage.rollbarLocation;", (results) =>
-      this.setState({ rollbarLocation: results[0] })
-    );
-    this.executeScript("localStorage.datadogLocation;", (results) =>
-      this.setState({ datadogLocation: results[0] })
-    );
-    this.executeScript("localStorage.datadogLogsLocation;", (results) =>
-      this.setState({ datadogLogsLocation: results[0] })
-    );
-    this.executeScript("localStorage.logrocketLocation;", (results) =>
-      this.setState({ logrocketLocation: results[0] })
-    );
-    this.executeScript("localStorage.appDynamicsLocation;", (results) =>
-      this.setState({ appDynamicsLocation: results[0] })
-    );
-    this.executeScript("localStorage.fullStoryLocation;", (results) =>
-      this.setState({ fullStoryLocation: results[0] })
-    );
-    this.executeScript("localStorage.sessionStackLocation;", (results) =>
-      this.setState({ sessionStackLocation: results[0] })
-    );
+      // @ts-ignore
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: activeTabId },
+          files: ["content.js"],
+        },
+        () => {
+          // Listen for messages from `content.js`
+          chrome.runtime.onMessage.addListener((message) => {
+            if (message.action === "detectionResults") {
+              console.log("Received detection results:", message.data); // Debug log
+              this.setState(message.data);
+            }
+          });
 
-    // Check for presence of Sentry-specific values
-    this.executeScript("localStorage.usesSentryPerformance;", (results) =>
-      this.setState({ usesSentryPerformance: results[0] === "true" })
-    );
-    this.executeScript("localStorage.sentryPerformanceSampleRate;", (results) =>
-      this.setState({ sentryPerformanceSampleRate: results[0] })
-    );
-    this.executeScript("localStorage.sentryErrorSampleRate;", (results) =>
-      this.setState({ sentryErrorSampleRate: results[0] })
-    );
-    this.executeScript("localStorage.dsnHost;", (results) =>
-      this.setState({ dsnHost: results[0] })
-    );
-    this.executeScript("localStorage.projectId;", (results) =>
-      this.setState({ projectId: results[0] })
-    );
-    this.executeScript("localStorage.sdkVersion;", (results) =>
-      this.setState({ sdkVersion: results[0] })
+          // Trigger the SDK detection process in `content.js`
+          chrome.tabs.sendMessage(activeTabId, { action: "runDetection" });
+        }
+      );
+    });
+
+    chrome.storage.local.get(
+      [
+        "hasSentry",
+        "hasNewRelic",
+        "hasBugsnag",
+        "hasRollbar",
+        "hasDatadog",
+        "hasDatadogLogs",
+        "hasLogRocket",
+        "hasAppDynamics",
+        "hasFullStory",
+        "hasSessionStack",
+        "sentryLocation",
+        "newrelicLocation",
+        "bugsnagLocation",
+        "rollbarLocation",
+        "datadogLocation",
+        "datadogLogsLocation",
+        "logrocketLocation",
+        "appDynamicsLocation",
+        "fullStoryLocation",
+        "sessionStackLocation",
+        "usesSentryPerformance",
+        "sentryPerformanceSampleRate",
+        "sentryErrorSampleRate",
+        "dsnHost",
+        "projectId",
+        "sdkVersion",
+      ],
+      (data) => {
+        this.setState({
+          hasSentry: data.hasSentry,
+          hasNewRelic: data.hasNewRelic,
+          hasBugsnag: data.hasBugsnag,
+          hasRollbar: data.hasRollbar,
+          hasDatadog: data.hasDatadog,
+          hasDatadogLogs: data.hasDatadogLogs,
+          hasLogRocket: data.hasLogRocket,
+          hasAppDynamics: data.hasAppDynamics,
+          hasFullStory: data.hasFullStory,
+          hasSessionStack: data.hasSessionStack,
+          sentryLocation: data.sentryLocation,
+          newrelicLocation: data.newrelicLocation,
+          bugsnagLocation: data.bugsnagLocation,
+          rollbarLocation: data.rollbarLocation,
+          datadogLocation: data.datadogLocation,
+          datadogLogsLocation: data.datadogLogsLocation,
+          logrocketLocation: data.logrocketLocation,
+          appDynamicsLocation: data.appDynamicsLocation,
+          fullStoryLocation: data.fullStoryLocation,
+          sessionStackLocation: data.sessionStackLocation,
+          usesSentryPerformance: data.usesSentryPerformance,
+          sentryPerformanceSampleRate: data.sentryPerformanceSampleRate,
+          sentryErrorSampleRate: data.sentryErrorSampleRate,
+          dsnHost: data.dsnHost,
+          projectId: data.projectId,
+          sdkVersion: data.sdkVersion,
+        });
+      }
     );
   }
 
