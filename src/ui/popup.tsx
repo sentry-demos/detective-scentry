@@ -25,18 +25,16 @@ const nubbleBox = "images/nubble_box.jpeg";
 const nubbleHoliday = "images/nubble_holiday.jpeg";
 const nubbleSwitch = "images/nubble_switch.jpeg";
 
-const sentryLogo = chrome.extension.getURL("images/sentry-logo.png");
-const bugsnagLogo = chrome.extension.getURL("images/bugsnag-logo.png");
-const rollbarLogo = chrome.extension.getURL("images/rollbar-logo.png");
-const newrelicLogo = chrome.extension.getURL("images/newrelic-logo.png");
-const datadogLogo = chrome.extension.getURL("images/datadog-logo.png");
-const logrocketLogo = chrome.extension.getURL("images/logrocket-logo.png");
-const datadogLogsLogo = chrome.extension.getURL("images/datadog-logs-logo.png");
-const appDynamicsLogo = chrome.extension.getURL("images/appdynamics-logo.png");
-const fullStoryLogo = chrome.extension.getURL("images/fullstory-logo.png");
-const sessionStackLogo = chrome.extension.getURL(
-  "images/sessionstack-logo.png"
-);
+const sentryLogo = chrome.runtime.getURL("images/sentry-logo.png");
+const bugsnagLogo = chrome.runtime.getURL("images/bugsnag-logo.png");
+const rollbarLogo = chrome.runtime.getURL("images/rollbar-logo.png");
+const newrelicLogo = chrome.runtime.getURL("images/newrelic-logo.png");
+const datadogLogo = chrome.runtime.getURL("images/datadog-logo.png");
+const logrocketLogo = chrome.runtime.getURL("images/logrocket-logo.png");
+const datadogLogsLogo = chrome.runtime.getURL("images/datadog-logs-logo.png");
+const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
+const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
+const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
 const petImages = [
   santoImg,
   santoChicken,
@@ -183,7 +181,7 @@ class Popup extends React.Component<IProps, IState> {
 
   randomPetImage() {
     const randomIndex = Math.floor(Math.random() * petImages.length);
-    const randomPet = petImages[randomIndex];
+    randomPet = petImages[randomIndex];
     return chrome.runtime.getURL(randomPet);
   }
 
@@ -347,7 +345,10 @@ class Popup extends React.Component<IProps, IState> {
           <Card.Img src={this.randomPetImage()} />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
-            Woof! My name is Santo and I detect SDKs.
+            {randomPet.includes("santo") &&
+              "Woof! My name is Santo and I detect SDKs."}
+            {randomPet.includes("nubble") &&
+              "Meow! My name is Nubble and I detect SDKs."}
           </Card.Subtitle>
           <p className="lead tooltip">...I have begun sniffing for SDKs...</p>
           <Card.Text>I smelled me some:</Card.Text>
