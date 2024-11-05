@@ -1,4 +1,4 @@
-console.log("yooooooo");
+console.log("Detecting SDKs...");
 
 localStorage.hasSentry =
   !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
