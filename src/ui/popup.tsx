@@ -11,21 +11,42 @@ import ListGroup from "react-bootstrap/ListGroup";
 //
 // When adding new images, copy them manually into dist/images/.
 // webpack doesn't automatically bundle them.
+// Images are referenced from dist/images/.
+//
+// When adding new images, copy them manually into dist/images/.
+// webpack doesn't automatically bundle them.
+let randomPet;
 const santoImg = "images/santo.jpg";
 const santoChicken = "images/santochicken.jpg";
 const santoLeaves = "images/santoleaves.jpg";
 const santoFloor = "images/santofloor.jpg";
-const sentryLogo = chrome.runtime.getURL("images/sentry-logo.png");
-const bugsnagLogo = chrome.runtime.getURL("images/bugsnag-logo.png");
-const rollbarLogo = chrome.runtime.getURL("images/rollbar-logo.png");
-const newrelicLogo = chrome.runtime.getURL("images/newrelic-logo.png");
-const datadogLogo = chrome.runtime.getURL("images/datadog-logo.png");
-const logrocketLogo = chrome.runtime.getURL("images/logrocket-logo.png");
-const datadogLogsLogo = chrome.runtime.getURL("images/datadog-logs-logo.png");
-const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
-const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
-const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
-const santoImages = [santoImg, santoChicken, santoLeaves, santoFloor];
+const nubbleLong = "images/nubble_long.jpeg";
+const nubbleBox = "images/nubble_box.jpeg";
+const nubbleHoliday = "images/nubble_holiday.jpeg";
+const nubbleSwitch = "images/nubble_switch.jpeg";
+
+const sentryLogo = chrome.extension.getURL("images/sentry-logo.png");
+const bugsnagLogo = chrome.extension.getURL("images/bugsnag-logo.png");
+const rollbarLogo = chrome.extension.getURL("images/rollbar-logo.png");
+const newrelicLogo = chrome.extension.getURL("images/newrelic-logo.png");
+const datadogLogo = chrome.extension.getURL("images/datadog-logo.png");
+const logrocketLogo = chrome.extension.getURL("images/logrocket-logo.png");
+const datadogLogsLogo = chrome.extension.getURL("images/datadog-logs-logo.png");
+const appDynamicsLogo = chrome.extension.getURL("images/appdynamics-logo.png");
+const fullStoryLogo = chrome.extension.getURL("images/fullstory-logo.png");
+const sessionStackLogo = chrome.extension.getURL(
+  "images/sessionstack-logo.png"
+);
+const petImages = [
+  santoImg,
+  santoChicken,
+  santoLeaves,
+  santoFloor,
+  nubbleBox,
+  nubbleHoliday,
+  nubbleLong,
+  nubbleSwitch,
+];
 
 const ACCEPTABLE_SAMPLE_RATE = 50;
 
@@ -160,10 +181,10 @@ class Popup extends React.Component<IProps, IState> {
     });
   }
 
-  randomSantoImage() {
-    const randomIndex = Math.floor(Math.random() * santoImages.length);
-    const randomSanto = santoImages[randomIndex];
-    return chrome.runtime.getURL(randomSanto);
+  randomPetImage() {
+    const randomIndex = Math.floor(Math.random() * petImages.length);
+    const randomPet = petImages[randomIndex];
+    return chrome.runtime.getURL(randomPet);
   }
 
   componentDidMount() {
@@ -323,7 +344,7 @@ class Popup extends React.Component<IProps, IState> {
       <div className="popup-padded">
         <Card.Header>Detective Scentry here!</Card.Header>
         <Card.Body>
-          <Card.Img src={this.randomSantoImage()} />
+          <Card.Img src={this.randomPetImage()} />
           {/* <Card.Title>Detective Scentry Here!</Card.Title> */}
           <Card.Subtitle className="mb-2 text-muted">
             Woof! My name is Santo and I detect SDKs.
