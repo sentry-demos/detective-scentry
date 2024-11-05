@@ -1,14 +1,12 @@
 // content.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "runDetection") {
-    // Run detection logic here
-    console.log("Running detection script...");
+    console.log("detecting SDKs...!");
     detectAllSDKs();
   }
 });
 
 function detectAllSDKs() {
-  console.log("detecting SDKs...!");
   localStorage.hasSentry =
     !!window.Sentry || !!window.__SENTRY__ || !!window.Raven;
   localStorage.hasNewRelic = !!window.newrelic;

@@ -46,6 +46,15 @@ const petImages = [
 
 const ACCEPTABLE_SAMPLE_RATE = 50;
 
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const activeTab = tabs[0].id;
+  // Inject `content.js` if it's not already loaded on the active tab
+  chrome.tabs.executeScript(activeTab, { file: "content.js" }, () => {
+    // Once injected, send a message to trigger detection logic
+    chrome.tabs.sendMessage(activeTab, { action: "runDetection" });
+  });
+});
+
 interface IProps {}
 
 interface IState {
