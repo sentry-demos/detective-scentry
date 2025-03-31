@@ -360,18 +360,56 @@ class Popup extends React.Component<IProps, IState> {
                   <li>
                     {this.state.usesSentryPerformance ? (
                       <span className="location">
-                        <span> Using Sentry performance</span> <br />
+                        {!isNaN(this.state.sentryPerformanceSampleRate) && (
+                          <>
+                            <span> Using Sentry performance</span> <br />
+                          </>
+                        )}
                         <span
                           className={
-                            this.state.sentryPerformanceSampleRate <
-                            ACCEPTABLE_SAMPLE_RATE
+                            isNaN(this.state.sentryPerformanceSampleRate)
+                              ? ""
+                              : this.state.sentryPerformanceSampleRate <
+                                ACCEPTABLE_SAMPLE_RATE
                               ? "warning"
                               : "success"
                           }
                         >
-                          Transaction Sampling:{" "}
-                          {this.state.sentryPerformanceSampleRate}%
-                          (client-side)
+                          {isNaN(this.state.sentryPerformanceSampleRate) ? (
+                            <>
+                            <span className="warning">Traces Sampler Not Found</span>
+                            <div className="warning-container">
+                              <span>Righ click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
+                              </span>
+                              <div className="code-block-container">
+                                <button 
+                                  className="copy-button"
+                                  onClick={() => {
+                                    const code = `__SENTRY__[__SENTRY__.version]?.defaultCurrentScope
+      ?.getClient()
+      ?.getOptions();`;
+                                    navigator.clipboard.writeText(code);
+                                    const button = document.querySelector('.copy-button');
+                                    if (button) {
+                                      button.textContent = 'Copied!';
+                                      setTimeout(() => {
+                                        button.textContent = 'Copy';
+                                      }, 2000);
+                                    }
+                                  }}
+                                >
+                                  Copy
+                                </button>
+                                <pre className="code-block">
+                                  {`__SENTRY__[__SENTRY__.version]?.defaultCurrentScope?.getClient()?.getOptions()?.tracesSampler;`}
+                                </pre>
+                                <span>Reach out to your SE for futher assistance.</span>
+                              </div>
+                            </div>
+                            </>
+                          ) : (
+                            `Transaction Sampling: ${this.state.sentryPerformanceSampleRate}% (client-side)`
+                          )}
                         </span>
                       </span>
                     ) : (
