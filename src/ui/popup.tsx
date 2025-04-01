@@ -74,6 +74,8 @@ interface IState {
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
+  sentryPerformanceSessionReplaySampleRate?: number;
+  sentryPerformanceSessionReplayOnErrorSampleRate?: number;
   dsnHost?: string;
   projectId?: string;
   sdkVersion?: string;
@@ -106,6 +108,8 @@ class Popup extends React.Component<IProps, IState> {
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
+      sentryPerformanceSessionReplaySampleRate: 0,
+      sentryPerformanceSessionReplayOnErrorSampleRate: 0,
       dsnHost: "",
       projectId: "",
       sdkVersion: "",
@@ -319,6 +323,16 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
+            () => localStorage.sentryPerformanceSessionReplaySampleRate,
+            (result) => this.setState({ sentryPerformanceSessionReplaySampleRate: result })
+          );
+
+          this.executeScript(
+            () => localStorage.sentryPerformanceSessionReplayOnErrorSampleRate,
+            (result) => this.setState({ sentryPerformanceSessionReplayOnErrorSampleRate: result })
+          );
+
+          this.executeScript(
             () => localStorage.dsnHost,
             (result) => this.setState({ dsnHost: result })
           );
@@ -435,6 +449,48 @@ class Popup extends React.Component<IProps, IState> {
                       ) : (
                         <span className="warning">
                           Could not detect an error sample rate
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="location">
+                      {this.state.sentryPerformanceSessionReplaySampleRate ? (
+                        <span
+                          className={
+                            this.state.sentryPerformanceSessionReplaySampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : ""
+                          }
+                        >
+                          Session Replay Sampling: {this.state.sentryPerformanceSessionReplaySampleRate}%
+                          (client-side)
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect a session replay sample rate
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="location">
+                      {this.state.sentryPerformanceSessionReplayOnErrorSampleRate ? (
+                        <span
+                          className={
+                            this.state.sentryPerformanceSessionReplayOnErrorSampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : ""
+                          }
+                        >
+                          Session Replay on Error Sampling: {this.state.sentryPerformanceSessionReplayOnErrorSampleRate}%
+                          (client-side)
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect a session replay on error sample rate
                         </span>
                       )}
                     </span>
