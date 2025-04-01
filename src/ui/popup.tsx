@@ -391,9 +391,10 @@ class Popup extends React.Component<IProps, IState> {
                         >
                           {isNaN(this.state.sentryPerformanceSampleRate) ? (
                             <>
-                            <span className="warning">Traces Sampler Not Found</span>
+                            <span className="warning">Traces Sample Rate Not Found</span>
                             <div className="warning-container">
-                              <span>Righ click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
+                            <span>You'll need to manually retrieve the <span className="code-line">traceSampler</span> <br /></span>
+                              <span>Right click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
                               </span>
                               <div className="code-block-container">
                                 <button 
