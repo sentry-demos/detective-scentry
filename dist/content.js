@@ -45,6 +45,8 @@ localStorage.fullStoryLocation = localStorage.hasFullStory
 let options = getOptions();
 localStorage.usesSentryPerformance = usesSentryPerformance();
 localStorage.sentryPerformanceSampleRate = sentryPerformanceSampleRate();
+localStorage.sentryPerformanceSessionReplaySampleRate = sentryPerformanceSessionReplaySampleRate();
+localStorage.sentryPerformanceSessionReplayOnErrorSampleRate = sentryPerformanceSessionReplayOnErrorSampleRate();
 localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
 localStorage.dsnHost = dsnHost();
 localStorage.projectId = projectId();
@@ -87,6 +89,26 @@ function usesSentryPerformance() {
 function sentryPerformanceSampleRate() {
   if (usesSentryPerformance()) {
     return options?.tracesSampleRate * 100; // convert into a human-readable percentage
+  }
+
+  return null;
+}
+
+function sentryPerformanceSessionReplaySampleRate(){
+  if (usesSentryPerformance()) {
+    return options?.replaysSessionSampleRate 
+    ? options?.replaysSessionSampleRate * 100 // convert into a human-readable percentage
+    : 0; // default to 0 if no sample rate is set
+  }
+
+  return null;
+}
+
+function sentryPerformanceSessionReplayOnErrorSampleRate(){
+  if (usesSentryPerformance()) {
+    return options?.replaysOnErrorSampleRate 
+    ? options?.replaysOnErrorSampleRate * 100 // convert into a human-readable percentage
+    : 0; // default to 0 if no sample rate is set
   }
 
   return null;

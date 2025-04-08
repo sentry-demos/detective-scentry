@@ -50,6 +50,13 @@ img {
     color: #f39c12;
 }
 
+.warning-container {
+    background-color: #fef3e7;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 5px 0;
+}
+
 .success {
     color: #27ae60;
 }
@@ -61,4 +68,45 @@ img {
 .card-img {
     width: 55% !important;
     padding-bottom: 1rem;
+}
+
+.code-block {
+    background-color: #f0f2f5;
+    padding: 15px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    margin-top: 5px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    position: relative;
+}
+
+.code-line {
+    line-height: 1.4;
+    color: #333;
+    padding: 4px;
+    background-color: #f0f2f5;
+}
+
+.code-block-container {
+    position: relative;
+    margin-top: 5px;
+}
+
+.copy-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 2px 6px;
+    background-color: #dee2e6;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.copy-button:hover {
+    background-color: #ced4da;
 }

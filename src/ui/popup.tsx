@@ -74,6 +74,8 @@ interface IState {
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
+  sentryPerformanceSessionReplaySampleRate?: number;
+  sentryPerformanceSessionReplayOnErrorSampleRate?: number;
   dsnHost?: string;
   projectId?: string;
   sdkVersion?: string;
@@ -106,6 +108,8 @@ class Popup extends React.Component<IProps, IState> {
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
+      sentryPerformanceSessionReplaySampleRate: 0,
+      sentryPerformanceSessionReplayOnErrorSampleRate: 0,
       dsnHost: "",
       projectId: "",
       sdkVersion: "",
@@ -319,6 +323,16 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
+            () => localStorage.sentryPerformanceSessionReplaySampleRate,
+            (result) => this.setState({ sentryPerformanceSessionReplaySampleRate: result })
+          );
+
+          this.executeScript(
+            () => localStorage.sentryPerformanceSessionReplayOnErrorSampleRate,
+            (result) => this.setState({ sentryPerformanceSessionReplayOnErrorSampleRate: result })
+          );
+
+          this.executeScript(
             () => localStorage.dsnHost,
             (result) => this.setState({ dsnHost: result })
           );
@@ -360,18 +374,57 @@ class Popup extends React.Component<IProps, IState> {
                   <li>
                     {this.state.usesSentryPerformance ? (
                       <span className="location">
-                        <span> Using Sentry performance</span> <br />
+                        {!isNaN(this.state.sentryPerformanceSampleRate) && (
+                          <>
+                            <span> Using Sentry performance</span> <br />
+                          </>
+                        )}
                         <span
                           className={
-                            this.state.sentryPerformanceSampleRate <
-                            ACCEPTABLE_SAMPLE_RATE
+                            isNaN(this.state.sentryPerformanceSampleRate)
+                              ? ""
+                              : this.state.sentryPerformanceSampleRate <
+                                ACCEPTABLE_SAMPLE_RATE
                               ? "warning"
                               : "success"
                           }
                         >
-                          Transaction Sampling:{" "}
-                          {this.state.sentryPerformanceSampleRate}%
-                          (client-side)
+                          {isNaN(this.state.sentryPerformanceSampleRate) ? (
+                            <>
+                            <span className="warning">Traces Sample Rate Not Found</span>
+                            <div className="warning-container">
+                            <span>You'll need to manually retrieve the <span className="code-line">traceSampler</span> <br /></span>
+                              <span>Right click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
+                              </span>
+                              <div className="code-block-container">
+                                <button 
+                                  className="copy-button"
+                                  onClick={() => {
+                                    const code = `__SENTRY__[__SENTRY__.version]?.defaultCurrentScope
+      ?.getClient()
+      ?.getOptions();`;
+                                    navigator.clipboard.writeText(code);
+                                    const button = document.querySelector('.copy-button');
+                                    if (button) {
+                                      button.textContent = 'Copied!';
+                                      setTimeout(() => {
+                                        button.textContent = 'Copy';
+                                      }, 2000);
+                                    }
+                                  }}
+                                >
+                                  Copy
+                                </button>
+                                <pre className="code-block">
+                                  {`__SENTRY__[__SENTRY__.version]?.defaultCurrentScope?.getClient()?.getOptions()?.tracesSampler;`}
+                                </pre>
+                                <span>Reach out to your SE for futher assistance.</span>
+                              </div>
+                            </div>
+                            </>
+                          ) : (
+                            `Transaction Sampling: ${this.state.sentryPerformanceSampleRate}% (client-side)`
+                          )}
                         </span>
                       </span>
                     ) : (
@@ -397,6 +450,48 @@ class Popup extends React.Component<IProps, IState> {
                       ) : (
                         <span className="warning">
                           Could not detect an error sample rate
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="location">
+                      {this.state.sentryPerformanceSessionReplaySampleRate ? (
+                        <span
+                          className={
+                            this.state.sentryPerformanceSessionReplaySampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : ""
+                          }
+                        >
+                          Session Replay Sampling: {this.state.sentryPerformanceSessionReplaySampleRate}%
+                          (client-side)
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect a session replay sample rate
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="location">
+                      {this.state.sentryPerformanceSessionReplayOnErrorSampleRate ? (
+                        <span
+                          className={
+                            this.state.sentryPerformanceSessionReplayOnErrorSampleRate <
+                            ACCEPTABLE_SAMPLE_RATE
+                              ? "warning"
+                              : ""
+                          }
+                        >
+                          Session Replay on Error Sampling: {this.state.sentryPerformanceSessionReplayOnErrorSampleRate}%
+                          (client-side)
+                        </span>
+                      ) : (
+                        <span className="warning">
+                          Could not detect a session replay on error sample rate
                         </span>
                       )}
                     </span>
