@@ -393,16 +393,14 @@ class Popup extends React.Component<IProps, IState> {
                             <>
                             <span className="warning">Traces Sample Rate Not Found</span>
                             <div className="warning-container">
-                            <span>You'll need to manually retrieve the <span className="code-line">traceSampler</span> <br /></span>
+                            <span>You'll need to manually retrieve the <span className="code-line">tracesSampler</span> <br /></span>
                               <span>Right click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
                               </span>
                               <div className="code-block-container">
                                 <button 
                                   className="copy-button"
                                   onClick={() => {
-                                    const code = `__SENTRY__[__SENTRY__.version]?.defaultCurrentScope
-      ?.getClient()
-      ?.getOptions();`;
+                                    const code = `__SENTRY__[__SENTRY__.version]?.defaultCurrentScope?.getClient()?.getOptions() || __SENTRY__.hub._stack[0].client._options.tracesSampler ;`;
                                     navigator.clipboard.writeText(code);
                                     const button = document.querySelector('.copy-button');
                                     if (button) {
@@ -416,7 +414,7 @@ class Popup extends React.Component<IProps, IState> {
                                   Copy
                                 </button>
                                 <pre className="code-block">
-                                  {`__SENTRY__[__SENTRY__.version]?.defaultCurrentScope?.getClient()?.getOptions()?.tracesSampler;`}
+                                  {`__SENTRY__[__SENTRY__.version]?.defaultCurrentScope?.getClient()?.getOptions()?.tracesSampler || __SENTRY__.hub._stack[0].client._options.tracesSampler ;`}
                                 </pre>
                                 <span>Reach out to your SE for futher assistance.</span>
                               </div>
