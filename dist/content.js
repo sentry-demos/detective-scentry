@@ -46,6 +46,7 @@ let options = getOptions();
 localStorage.usesSentryPerformance = usesSentryPerformance();
 localStorage.sentryPerformanceSampleRate = sentryPerformanceSampleRate();
 localStorage.sentryPerformanceSessionReplaySampleRate = sentryPerformanceSessionReplaySampleRate();
+localStorage.sentryPerformanceSampler = sentryPerformanceSampler();
 localStorage.sentryPerformanceSessionReplayOnErrorSampleRate = sentryPerformanceSessionReplayOnErrorSampleRate();
 localStorage.sentryErrorSampleRate = sentryErrorSampleRate();
 localStorage.dsnHost = dsnHost();
@@ -89,6 +90,14 @@ function usesSentryPerformance() {
 function sentryPerformanceSampleRate() {
   if (usesSentryPerformance()) {
     return options?.tracesSampleRate * 100; // convert into a human-readable percentage
+  }
+
+  return null;
+}
+
+function sentryPerformanceSampler() {
+  if (usesSentryPerformance()) {
+    return options?.tracesSampler; // convert into a human-readable percentage
   }
 
   return null;

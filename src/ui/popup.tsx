@@ -74,6 +74,7 @@ interface IState {
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
+  sentryPerformanceSampler?: any | null;
   sentryPerformanceSessionReplaySampleRate?: number;
   sentryPerformanceSessionReplayOnErrorSampleRate?: number;
   dsnHost?: string;
@@ -328,6 +329,11 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
+            () => localStorage.sentryPerformanceSampler,
+            (result) => this.setState({ sentryPerformanceSampler: result  })
+          );
+
+          this.executeScript(
             () => localStorage.sentryPerformanceSessionReplayOnErrorSampleRate,
             (result) => this.setState({ sentryPerformanceSessionReplayOnErrorSampleRate: result })
           );
@@ -391,11 +397,9 @@ class Popup extends React.Component<IProps, IState> {
                         >
                           {isNaN(this.state.sentryPerformanceSampleRate) ? (
                             <>
-                            <span className="warning">Traces Sample Rate Not Found</span>
+                            <span className="code-line">tracesSampler</span> {this.state.sentryPerformanceSampler ? <span className="success">is set</span> : <span className="warning">is not set</span>}
                             <div className="warning-container">
-                            <span>You'll need to manually retrieve the <span className="code-line">tracesSampler</span> <br /></span>
-                              <span>Right click on the website, select <span className="code-line">Inspect</span>, select <span className="code-line">Console</span>, and run the following command: <br />
-                              </span>
+                              <span>Paste following command into console to retrieve manually: </span>
                               <div className="code-block-container">
                                 <button 
                                   className="copy-button"
