@@ -77,8 +77,9 @@ img {
     font-family: monospace;
     font-size: 12px;
     margin-top: 5px;
-    white-space: pre-wrap;
-    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     position: relative;
 }
 
