@@ -13,7 +13,7 @@ localStorage.hasAppDynamics = !!window.ADRUM;
 localStorage.hasSessionStack = !!window.SessionStack;
 localStorage.hasFullStory = !!(window.FS && window.FS.getCurrentSessionURL());
 localStorage.hasSplunk = !!window.SplunkRum;
-localStorage.hasPostHog = !!window.posthog;
+localStorage.hasPosthog = !!window.posthog;
 localStorage.hasAirbrake = !!window.Airbrake;
 
 localStorage.sentryLocation = localStorage.hasSentry
@@ -46,7 +46,7 @@ localStorage.fullStoryLocation = localStorage.hasFullStory
 localStorage.splunkLocation = localStorage.hasSplunk
   ? window.location.href
   : "";
-localStorage.postHogLocation = localStorage.hasPostHog
+localStorage.posthogLocation = localStorage.hasPosthog
   ? window.location.href
   : "";
 localStorage.airbrakeLocation = localStorage.hasAirbrake

@@ -36,7 +36,7 @@ const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
 const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
 const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
 const splunkLogo = chrome.runtime.getURL("images/splunk-logo.png");
-const postHogLogo = chrome.runtime.getURL("images/posthog-logo.png");
+const posthogLogo = chrome.runtime.getURL("images/posthog-logo.png");
 const airbrakeLogo = chrome.runtime.getURL("images/airbrake-logo.png");
 const petImages = [
   santoImg,
@@ -65,7 +65,7 @@ interface IState {
   hasSessionStack?: boolean;
   hasFullStory?: boolean;
   hasSplunk?: boolean;
-  hasPostHog?: boolean;
+  hasPosthog?: boolean;
   hasAirbrake?: boolean;
   sentryLocation: string;
   newrelicLocation: string;
@@ -78,7 +78,7 @@ interface IState {
   fullStoryLocation: string;
   sessionStackLocation: string;
   splunkLocation: string;
-  postHogLocation: string;
+  posthogLocation: string;
   airbrakeLocation: string;
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
@@ -106,7 +106,7 @@ class Popup extends React.Component<IProps, IState> {
       hasFullStory: false,
       hasSessionStack: false,
       hasSplunk: false,
-      hasPostHog: false,
+      hasPosthog: false,
       hasAirbrake: false,
       sentryLocation: "",
       newrelicLocation: "",
@@ -119,7 +119,7 @@ class Popup extends React.Component<IProps, IState> {
       fullStoryLocation: "",
       sessionStackLocation: "",
       splunkLocation: "",
-      postHogLocation: "",
+      posthogLocation: "",
       airbrakeLocation: "",
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
@@ -374,8 +374,8 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
-            () => localStorage.hasPostHog,
-            (result) => this.setState({ hasPostHog: result === "true" })
+            () => localStorage.hasPosthog,
+            (result) => this.setState({ hasPosthog: result === "true" })
           );
 
           this.executeScript(
@@ -389,8 +389,8 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
-            () => localStorage.postHogLocation,
-            (result) => this.setState({ postHogLocation: result })
+            () => localStorage.posthogLocation,
+            (result) => this.setState({ posthogLocation: result })
           );
 
           this.executeScript(
@@ -698,13 +698,13 @@ class Popup extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
-            {this.state.hasPostHog ? (
+            {this.state.hasPosthog ? (
               <ListGroup.Item>
-                <img className="posthog-logo" src={postHogLogo} />
+                <img className="posthog-logo" src={posthogLogo} />
                 <p className="text-muted location">
                   PostHog found at:{" "}
-                  <a href={this.state.postHogLocation}>
-                    {this.state.postHogLocation}
+                  <a href={this.state.posthogLocation}>
+                    {this.state.posthogLocation}
                   </a>
                 </p>
               </ListGroup.Item>
