@@ -37,6 +37,7 @@ const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
 const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
 const splunkLogo = chrome.runtime.getURL("images/splunk-logo.png");
 const postHogLogo = chrome.runtime.getURL("images/posthog-logo.png");
+const airbrakeLogo = chrome.runtime.getURL("images/airbrake-logo.png");
 const petImages = [
   santoImg,
   santoChicken,
@@ -65,6 +66,7 @@ interface IState {
   hasFullStory?: boolean;
   hasSplunk?: boolean;
   hasPostHog?: boolean;
+  hasAirbrake?: boolean;
   sentryLocation: string;
   newrelicLocation: string;
   bugsnagLocation: string;
@@ -77,6 +79,7 @@ interface IState {
   sessionStackLocation: string;
   splunkLocation: string;
   postHogLocation: string;
+  airbrakeLocation: string;
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
@@ -104,6 +107,7 @@ class Popup extends React.Component<IProps, IState> {
       hasSessionStack: false,
       hasSplunk: false,
       hasPostHog: false,
+      hasAirbrake: false,
       sentryLocation: "",
       newrelicLocation: "",
       bugsnagLocation: "",
@@ -116,6 +120,7 @@ class Popup extends React.Component<IProps, IState> {
       sessionStackLocation: "",
       splunkLocation: "",
       postHogLocation: "",
+      airbrakeLocation: "",
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
@@ -374,6 +379,11 @@ class Popup extends React.Component<IProps, IState> {
           );
 
           this.executeScript(
+            () => localStorage.hasAirbrake,
+            (result) => this.setState({ hasAirbrake: result === "true" })
+          );
+
+          this.executeScript(
             () => localStorage.splunkLocation,
             (result) => this.setState({ splunkLocation: result })
           );
@@ -381,6 +391,11 @@ class Popup extends React.Component<IProps, IState> {
           this.executeScript(
             () => localStorage.postHogLocation,
             (result) => this.setState({ postHogLocation: result })
+          );
+
+          this.executeScript(
+            () => localStorage.airbrakeLocation,
+            (result) => this.setState({ airbrakeLocation: result })
           );
         }
       );
@@ -696,11 +711,24 @@ class Popup extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
+            {this.state.hasAirbrake ? (
+              <ListGroup.Item>
+                <img className="airbrake-logo" src={airbrakeLogo} />
+                <p className="text-muted location">
+                  Airbrake found at:{" "}
+                  <a href={this.state.airbrakeLocation}>
+                    {this.state.airbrakeLocation}
+                  </a>
+                </p>
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
           P.S. I currently only know how to detect 6 scents: Sentry, NewRelic,
-          Bugsnag, Rollbar, Datadog (RUM), +LogRocket, SplunkRum, PostHog
+          Bugsnag, Rollbar, Datadog (RUM), +LogRocket, SplunkRum, PostHog, Airbrake
         </Card.Footer>
       </div>
     );
