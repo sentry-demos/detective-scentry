@@ -35,6 +35,9 @@ const datadogLogsLogo = chrome.runtime.getURL("images/datadog-logs-logo.png");
 const appDynamicsLogo = chrome.runtime.getURL("images/appdynamics-logo.png");
 const fullStoryLogo = chrome.runtime.getURL("images/fullstory-logo.png");
 const sessionStackLogo = chrome.runtime.getURL("images/sessionstack-logo.png");
+const splunkLogo = chrome.runtime.getURL("images/splunk-logo.png");
+const posthogLogo = chrome.runtime.getURL("images/posthog-logo.png");
+const airbrakeLogo = chrome.runtime.getURL("images/airbrake-logo.png");
 const petImages = [
   santoImg,
   santoChicken,
@@ -61,6 +64,9 @@ interface IState {
   hasAppDynamics?: boolean;
   hasSessionStack?: boolean;
   hasFullStory?: boolean;
+  hasSplunk?: boolean;
+  hasPosthog?: boolean;
+  hasAirbrake?: boolean;
   sentryLocation: string;
   newrelicLocation: string;
   bugsnagLocation: string;
@@ -69,8 +75,11 @@ interface IState {
   datadogLogsLocation: string;
   logrocketLocation: string;
   appDynamicsLocation: string;
-  sessionStackLocation: string;
   fullStoryLocation: string;
+  sessionStackLocation: string;
+  splunkLocation: string;
+  posthogLocation: string;
+  airbrakeLocation: string;
   usesSentryPerformance?: boolean;
   sentryPerformanceSampleRate?: number;
   sentryErrorSampleRate?: number;
@@ -96,6 +105,9 @@ class Popup extends React.Component<IProps, IState> {
       hasAppDynamics: false,
       hasFullStory: false,
       hasSessionStack: false,
+      hasSplunk: false,
+      hasPosthog: false,
+      hasAirbrake: false,
       sentryLocation: "",
       newrelicLocation: "",
       bugsnagLocation: "",
@@ -106,6 +118,9 @@ class Popup extends React.Component<IProps, IState> {
       appDynamicsLocation: "",
       fullStoryLocation: "",
       sessionStackLocation: "",
+      splunkLocation: "",
+      posthogLocation: "",
+      airbrakeLocation: "",
       usesSentryPerformance: false,
       sentryPerformanceSampleRate: 0,
       sentryErrorSampleRate: 0,
@@ -351,6 +366,36 @@ class Popup extends React.Component<IProps, IState> {
           this.executeScript(
             () => localStorage.sdkVersion,
             (result) => this.setState({ sdkVersion: result })
+          );
+
+          this.executeScript(
+            () => localStorage.hasSplunk,
+            (result) => this.setState({ hasSplunk: result === "true" })
+          );
+
+          this.executeScript(
+            () => localStorage.hasPosthog,
+            (result) => this.setState({ hasPosthog: result === "true" })
+          );
+
+          this.executeScript(
+            () => localStorage.hasAirbrake,
+            (result) => this.setState({ hasAirbrake: result === "true" })
+          );
+
+          this.executeScript(
+            () => localStorage.splunkLocation,
+            (result) => this.setState({ splunkLocation: result })
+          );
+
+          this.executeScript(
+            () => localStorage.posthogLocation,
+            (result) => this.setState({ posthogLocation: result })
+          );
+
+          this.executeScript(
+            () => localStorage.airbrakeLocation,
+            (result) => this.setState({ airbrakeLocation: result })
           );
         }
       );
@@ -640,11 +685,50 @@ class Popup extends React.Component<IProps, IState> {
             ) : (
               ""
             )}
+            {this.state.hasSplunk ? (
+              <ListGroup.Item>
+                <img className="splunk-logo" src={splunkLogo} />
+                <p className="text-muted location">
+                  Splunk found at:{" "}
+                  <a href={this.state.splunkLocation}>
+                    {this.state.splunkLocation}
+                  </a>
+                </p>
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
+            {this.state.hasPosthog ? (
+              <ListGroup.Item>
+                <img className="posthog-logo" src={posthogLogo} />
+                <p className="text-muted location">
+                  PostHog found at:{" "}
+                  <a href={this.state.posthogLocation}>
+                    {this.state.posthogLocation}
+                  </a>
+                </p>
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
+            {this.state.hasAirbrake ? (
+              <ListGroup.Item>
+                <img className="airbrake-logo" src={airbrakeLogo} />
+                <p className="text-muted location">
+                  Airbrake found at:{" "}
+                  <a href={this.state.airbrakeLocation}>
+                    {this.state.airbrakeLocation}
+                  </a>
+                </p>
+              </ListGroup.Item>
+            ) : (
+              ""
+            )}
           </ListGroup>
         </Card.Body>
         <Card.Footer className="text-muted">
           P.S. I currently only know how to detect 6 scents: Sentry, NewRelic,
-          Bugsnag, Rollbar, Datadog (RUM), +LogRocket
+          Bugsnag, Rollbar, Datadog (RUM), +LogRocket, SplunkRum, PostHog, Airbrake
         </Card.Footer>
       </div>
     );

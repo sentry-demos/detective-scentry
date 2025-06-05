@@ -38,6 +38,21 @@ img {
     width: 8rem;
 }
 
+.splunk-logo {
+    height: 2rem;
+    width: 6rem;
+}
+
+.posthog-logo {
+    height: 2rem;
+    width: 6rem;
+}
+
+.airbrake-logo {
+    height: 2rem;
+    width: 6rem;
+}
+
 .card-footer {
     font-size: x-small
 }
